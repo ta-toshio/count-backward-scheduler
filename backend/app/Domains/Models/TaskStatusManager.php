@@ -26,7 +26,7 @@ class TaskStatusManager
         /** @var Task $task */
         foreach ($tasks as $task) {
             $projectStatus = $projectStatusManager->getProjectStatus($task->getProject()->getSlug());
-            $compressPoint = Calculator::floatDiv($task->getPoint(), $projectStatus->getCompressCoef());
+            $compressPoint = Calculator::floatDiv($task->getPoint(), $projectStatus->getCompressCoef(), 4);
             $stretchPoint = Calculator::floatMul($task->getPoint(), $projectStatus->getCompressCoef());
 
             $self->addTask(

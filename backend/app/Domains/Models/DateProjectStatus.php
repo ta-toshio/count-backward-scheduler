@@ -66,4 +66,24 @@ class DateProjectStatus
         return $this->stretchPoint;
     }
 
+    /**
+     * @param  float  $point
+     * @return DateProjectStatus
+     */
+    public function setPoint(float $point): DateProjectStatus
+    {
+        $this->point = $point;
+        return $this;
+    }
+
+    /**
+     * @param  float|int  $stretchPoint
+     * @return DateProjectStatus
+     */
+    public function setStretchPoint(float|int $stretchPoint): DateProjectStatus
+    {
+        $this->stretchPoint = $stretchPoint;
+        return $this;
+    }
+
 }

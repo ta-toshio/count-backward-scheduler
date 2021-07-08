@@ -51,9 +51,10 @@ class TaskStatus
      */
     public function addAllocatedCompressPoint(float $point): static
     {
-        $this->allocatedCompressPoint = Calculator::floatAdd($this->allocatedCompressPoint, $point);
+        $this->allocatedCompressPoint = Calculator::floatAdd($this->allocatedCompressPoint, $point, 4);
 
         if ($this->allocatedCompressPoint >= $this->compressPoint) {
+//            $this->allocatedCompressPoint = $this->compressPoint;
             $this->assigned();
         }
 
@@ -62,7 +63,7 @@ class TaskStatus
 
     public function getLeftCompressPoint(): float|int
     {
-        $point = Calculator::floatSub($this->compressPoint, $this->allocatedCompressPoint);
+        $point = Calculator::floatSub($this->compressPoint, $this->allocatedCompressPoint, 4);
         return $point > 0 ? $point : 0;
     }
 

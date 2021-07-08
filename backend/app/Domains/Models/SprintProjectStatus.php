@@ -17,7 +17,7 @@ class SprintProjectStatus
 
     public function __construct(
         string $projectSlug,
-        float $point,
+        float $point
     )
     {
         $this->projectSlug = $projectSlug;
@@ -56,7 +56,7 @@ class SprintProjectStatus
      */
     public function getLeftPoint(): float|int
     {
-        $point = Calculator::floatSub($this->point, $this->allocatedPoint);
+        $point = Calculator::floatSub($this->point, $this->allocatedPoint, 3);
         return $point > 0 ? $point : 0;
     }
 
@@ -66,7 +66,7 @@ class SprintProjectStatus
      */
     public function addAllocatedPoint(float $point): static
     {
-        $this->allocatedPoint = Calculator::floatAdd($this->allocatedPoint, $point);
+        $this->allocatedPoint = Calculator::floatAdd($this->allocatedPoint, $point, 3);
 
         return $this;
     }

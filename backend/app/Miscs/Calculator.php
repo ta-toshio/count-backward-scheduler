@@ -7,13 +7,13 @@ namespace App\Miscs;
 class Calculator
 {
 
-    public static function floatAdd(float|int $a, float|int $b, $precision = 1): float|int
+    public static function floatAdd(float|int $a, float|int $b, $precision = 0): float|int
     {
         return round($a + $b, $precision);
 //        return (float) bcadd($a, $b, $precision);
     }
 
-    public static function floatSub(float|int $a, float|int $b, $precision = 1): float|int
+    public static function floatSub(float|int $a, float|int $b, $precision = 0): float|int
     {
         return round($a - $b, $precision);
 //        return (float) bcsub($a, $b, $precision);
@@ -27,6 +27,7 @@ class Calculator
 
     public static function floatDiv($a, $b, $precision = 3): float
     {
+//        return round(bcdiv($a, $b, $precision), $precision);
         return round($a / $b, $precision);
 //        return (float) bcdiv($a, $b, $precision);
     }

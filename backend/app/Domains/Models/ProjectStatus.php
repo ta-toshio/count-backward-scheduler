@@ -45,7 +45,7 @@ class ProjectStatus
 
     public function getLeftPoint(): float|int
     {
-        $point = Calculator::floatSub($this->totalPoint, $this->allocationTotalPoint);
+        $point = Calculator::floatSub($this->totalPoint, $this->allocatedTotalPoint);
         return $point > 0 ? $point : 0;
     }
 
@@ -87,7 +87,7 @@ class ProjectStatus
 
     public function computeCompressCoef()
     {
-        $this->compressCoef = round(Calculator::floatDiv($this->totalPoint, $this->allocatedTotalPoint), 3);
+        $this->compressCoef = Calculator::floatDiv($this->totalPoint, $this->allocatedTotalPoint, 4);
     }
 
     /**

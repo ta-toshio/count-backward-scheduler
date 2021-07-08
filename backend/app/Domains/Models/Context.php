@@ -114,6 +114,7 @@ class Context
         $dateStatus = new DateStatus($theDate, $limitPoint);
 
         $reallocate = false;
+        $surplus = 0;
 
         /** @var ProjectStatus $projectStatus */
         foreach ($this->projectStatusManager->getProjectStatuses() as $projectStatus) {
@@ -127,8 +128,9 @@ class Context
                 : 0;
 
             if ($point > $projectStatus->getLeftPoint()) {
-                $point = $projectStatus->getLeftPoint();
                 $reallocate = true;
+                $surplus += $point - $projectStatus->getLeftPoint();
+                $point = $projectStatus->getLeftPoint();
             }
 
             $dateProjectStatus = new DateProjectStatus(
@@ -149,7 +151,8 @@ class Context
         }
 
         if ($reallocate) {
-
+            $this->computeCurrentRatio($theDate);
+            $this->reallocateSurplusPoint($surplus, $dateStatus);
         }
 
         $this->dateStatuses[$theDate->format('Y-m-d')] = $dateStatus;
@@ -176,22 +179,35 @@ class Context
             }
         }
 
-        $totalUnusedRatio = $this->projectStatusManager->totalRatioOfProjectsAreAssigned();
-
-        $projectCountHavingTaskToBeAssigned = $this->projectStatusManager
+        // 割当済みのプロジェクトの割当比率を分配
+        $totalRatio = $this->projectStatusManager
             ->findAllProjectHavingTaskToBeAssigned()
-            ->count();
-
-        if ($projectCountHavingTaskToBeAssigned === 0) {
-            return;
-        }
-
-        $surplus = Calculator::floatDiv($totalUnusedRatio, $projectCountHavingTaskToBeAssigned);
+            ->reduce(fn($acc, ProjectStatus $projectStatus) => $acc + $projectStatus->getRatio(), 0);
 
         $this->projectStatusManager
-            ->getProjectStatuses()
-            ->filter(fn(ProjectStatus $projectStatus) => !$projectStatus->isAssigned())
-            ->map(fn(ProjectStatus $projectStatus) => $projectStatus->currentRatio($surplus));
+            ->findAllProjectHavingTaskToBeAssigned()
+            ->map(function (ProjectStatus $projectStatus) use($totalRatio) {
+                return $projectStatus->setCurrentRatio(round($projectStatus->getRatio() / $totalRatio * 100, 3));
+            });
+    }
+
+    public function reallocateSurplusPoint(float $surplus, DateStatus $dateStatus)
+    {
+        // 割当ポイントより残ポイントが少なかった場合の、余ったポイントを、他の有効なプロジェクトに再分配
+        $dateStatus->getDateProjectStatuses()
+            ->filter(fn(DateProjectStatus $dateProjectStatus)
+            => !$this->projectStatusManager->getProjectStatus($dateProjectStatus->getSlug())->isAssigned())
+            ->map(function (DateProjectStatus $dateProjectStatus) use ($surplus) {
+                $ratio = $this->projectStatusManager
+                    ->getProjectStatus($dateProjectStatus->getSlug())
+                    ->getCurrentRatio();
+                $p = $dateProjectStatus->getPoint() + Calculator::floatMul($surplus, $ratio / 100);
+                $s = $dateProjectStatus->getStretchPoint() + Calculator::floatMul($surplus, $ratio / 100);
+                // @TODO currentRatioの値がsurplus分加えられることによって増える
+                return $dateProjectStatus
+                    ->setPoint($p)
+                    ->setStretchPoint($s);
+            });
     }
 
     public function groupBySprint(): array

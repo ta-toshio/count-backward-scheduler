@@ -8,6 +8,7 @@ use App\Domains\Models\Context;
 use App\Domains\Models\DateTask;
 use App\Domains\Models\SprintProjectStatus;
 use App\Domains\Models\SprintProjectStatusManager;
+use App\Domains\Models\Task;
 use App\Domains\Models\TaskStatus;
 use App\Domains\Models\TaskStatusManager;
 
@@ -70,34 +71,33 @@ class SeriesAllocator implements AllocatorInterface
 //                var_dump($dateTask->getDate()->toDateTimeLocalString());
 //                var_dump($dateTask->getPoint());
 //                var_dump($dateTask->getAllocatedPoint());
+//                /** @var Task $task */
+//                foreach ($dateTask->getTasks() as $task) {
+//                    var_dump($task->getProject()->getSlug() . ' ' . $task->getTitle() . ' ' . $task->getAllocatedPoint());
+//                }
 //            }
 //        }
 
-        foreach ($dateTasks as $dateTask) {
-            var_dump('------------');
-            var_dump($dateTask->getDate()->toDateTimeLocalString());
-            foreach ($dateTask->getTasks() as $task) {
-//                if ($task->getProject()->getSlug() !== 'search-brand') {
-//                    continue;
-//                }
-                var_dump($task->getProject()->getSlug() .
-                    ' '.
-                    $task->getTitle() .
-                    ' '.
-                    $task->getPoint() .
-                    ' ' .
-                    $task->getAllocatedPoint());
-            }
-        }
+//        foreach ($dateTasks as $dateTask) {
+//            var_dump('------------');
+//            var_dump($dateTask->getDate()->toDateTimeLocalString());
+//            foreach ($dateTask->getTasks() as $task) {
+////                if ($task->getProject()->getSlug() !== 'search-brand') {
+////                    continue;
+////                }
+//                var_dump($task->getProject()->getSlug() .
+//                    ' '.
+//                    $task->getTitle() .
+//                    ' '.
+//                    $task->getPoint() .
+//                    ' ' .
+//                    $task->getAllocatedPoint());
+//            }
+//        }
     }
 
-    public function assign(DateTask $dateTask, SprintProjectStatusManager $sprintProjectStatusManager, $depth = 0)
+    public function assign(DateTask $dateTask, SprintProjectStatusManager $sprintProjectStatusManager)
     {
-        $depth++;
-        if ($depth > 10) {
-            return;
-        }
-
         $taskStatus = $this->getNextTask($sprintProjectStatusManager);
         if (!$taskStatus) {
             return;
@@ -105,67 +105,67 @@ class SeriesAllocator implements AllocatorInterface
 
         $sprintProjectStatus = $sprintProjectStatusManager->getSprintProjectStatus($taskStatus->getProjectSlug());
 
-            // タスクの残ポイント
-            $pointToBeConsumed = $taskStatus->getLeftCompressPoint();
+        // タスクの残ポイント
+        $pointToBeConsumed = $taskStatus->getLeftCompressPoint();
 
-            // タスク残ポイントがプロジェクト残タスクより上だったら
-            // 消化されるポイントはプロジェクトの残ポイント
-            if ($pointToBeConsumed > $sprintProjectStatus->getLeftPoint()) {
-                $pointToBeConsumed = $sprintProjectStatus->getLeftPoint();
-            }
+        // タスク残ポイントがプロジェクト残タスクより上だったら
+        // 消化されるポイントはプロジェクトの残ポイント
+        if ($pointToBeConsumed > $sprintProjectStatus->getLeftPoint()) {
+            $pointToBeConsumed = $sprintProjectStatus->getLeftPoint();
+        }
 
-            $leftDatePoint = $dateTask->getLeftPoint();
-            if ($pointToBeConsumed >= $leftDatePoint) {
-                // タスク残ポイントが1日残ポイントより上だったらタスクに1日残ポイント分を割り当てて終了
+        $leftDatePoint = $dateTask->getLeftPoint();
+        if ($pointToBeConsumed >= $leftDatePoint) {
+            // タスク残ポイントが1日残ポイントより上だったらタスクに1日残ポイント分を割り当てて終了
 
-                $task = $taskStatus
-                    ->cloneTask()
-                    ->setDate($dateTask->getDate())
-                    ->setAllocatedPoint($taskStatus->computeStretchPoint($leftDatePoint));
-                $dateTask
-                    ->addAllocatedPoint($leftDatePoint)
-                    ->addTask($task)
-                    ->assigned();
-                $taskStatus
-                    ->addAllocatedCompressPoint($leftDatePoint);
-                $sprintProjectStatus
-                    ->addAllocatedPoint($leftDatePoint);
+            $task = $taskStatus
+                ->cloneTask()
+                ->setDate($dateTask->getDate())
+                ->setAllocatedPoint($taskStatus->computeStretchPoint($leftDatePoint));
+            $dateTask
+                ->addAllocatedPoint($leftDatePoint)
+                ->addTask($task)
+                ->assigned();
+            $taskStatus
+                ->addAllocatedCompressPoint($leftDatePoint);
+            $sprintProjectStatus
+                ->addAllocatedPoint($leftDatePoint);
 
-            } else if ($taskStatus->getLeftCompressPoint() > $sprintProjectStatus->getLeftPoint()) {
-                // スプリント間の割当可能ポイントを超えてしまった場合、残った可能なポイントだけ割当する。
-                // 1日残ポイントはまだ残っているので再度assignする
-                $task = $taskStatus
-                    ->cloneTask()
-                    ->setDate($dateTask->getDate())
-                    ->setAllocatedPoint($taskStatus->computeStretchPoint($pointToBeConsumed));
-                $dateTask
-                    ->addAllocatedPoint($pointToBeConsumed)
-                    ->addTask($task);
-                $taskStatus
-                    ->addAllocatedCompressPoint($pointToBeConsumed);
-                $sprintProjectStatus
-                    ->addAllocatedPoint($pointToBeConsumed);
+        } else if ($taskStatus->getLeftCompressPoint() > $sprintProjectStatus->getLeftPoint()) {
+            // スプリント間の割当可能ポイントを超えてしまった場合、残った可能なポイントだけ割当する。
+            // 1日残ポイントはまだ残っているので再度assignする
+            $task = $taskStatus
+                ->cloneTask()
+                ->setDate($dateTask->getDate())
+                ->setAllocatedPoint($taskStatus->computeStretchPoint($pointToBeConsumed));
+            $dateTask
+                ->addAllocatedPoint($pointToBeConsumed)
+                ->addTask($task);
+            $taskStatus
+                ->addAllocatedCompressPoint($pointToBeConsumed);
+            $sprintProjectStatus
+                ->addAllocatedPoint($pointToBeConsumed);
 
-                $this->assign($dateTask, $sprintProjectStatusManager, $depth);
+            $this->assign($dateTask, $sprintProjectStatusManager);
 
-            } else {
-                // タスク残ポイントが1日残ポイントより下だったらタスク残ポイントを割り当てて再度assignをする
+        } else {
+            // タスク残ポイントが1日残ポイントより下だったらタスク残ポイントを割り当てて再度assignをする
 
-                $task = $taskStatus
-                    ->cloneTask()
-                    ->setDate($dateTask->getDate())
-                    ->setAllocatedPoint($taskStatus->computeStretchPoint($pointToBeConsumed));
-                $dateTask
-                    ->addAllocatedPoint($pointToBeConsumed)
-                    ->addTask($task);
-                $taskStatus
-                    ->addAllocatedCompressPoint($pointToBeConsumed)
-                    ->assigned();
-                $sprintProjectStatus
-                    ->addAllocatedPoint($pointToBeConsumed);
+            $task = $taskStatus
+                ->cloneTask()
+                ->setDate($dateTask->getDate())
+                ->setAllocatedPoint($taskStatus->computeStretchPoint($pointToBeConsumed));
+            $dateTask
+                ->addAllocatedPoint($pointToBeConsumed)
+                ->addTask($task);
+            $taskStatus
+                ->addAllocatedCompressPoint($pointToBeConsumed)
+                ->assigned();
+            $sprintProjectStatus
+                ->addAllocatedPoint($pointToBeConsumed);
 
-                $this->assign($dateTask, $sprintProjectStatusManager, $depth);
-            }
+            $this->assign($dateTask, $sprintProjectStatusManager);
+        }
     }
 
     /**
