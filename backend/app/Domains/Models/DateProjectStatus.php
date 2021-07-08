@@ -4,25 +4,32 @@
 namespace App\Domains\Models;
 
 
+use App\Miscs\Calculator;
+
 class DateProjectStatus
 {
 
     private string $slug;
     private float $ratio;
     private float $point;
-    private float $compressPoint;
+    private float $stretchPoint;
 
-    public function __construct(string $slug, float $ratio, float $point, float $compressPoint)
+    public function __construct(
+        string $slug,
+        float $ratio,
+        float $point,
+        float $stretchPoint = 0
+    )
     {
         $this->slug = $slug;
         $this->ratio = $ratio;
         $this->point = $point;
-        $this->compressPoint = $compressPoint;
+        $this->stretchPoint = $stretchPoint;
     }
 
-    public function updateCompressPoint(float $coef): static
+    public function updateStretchPoint(float $coef): static
     {
-        $this->compressPoint = (float) bcmul($this->point, $coef, 3);
+        $this->stretchPoint = Calculator::floatMul($this->point, $coef);
 
         return $this;
     }
@@ -54,9 +61,9 @@ class DateProjectStatus
     /**
      * @return float
      */
-    public function getCompressPoint(): float
+    public function getStretchPoint(): float
     {
-        return $this->compressPoint;
+        return $this->stretchPoint;
     }
 
 }

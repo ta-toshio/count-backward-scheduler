@@ -4,7 +4,9 @@
 namespace App\Domains\Models;
 
 
+use App\Miscs\Calculator;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Collection;
 
 class Context
 {
@@ -84,15 +86,28 @@ class Context
                 if ($projectStatus->getCompressCoef() == 1) {
                     continue;
                 }
-                $dateProjectStatus->updateCompressPoint($projectStatus->getCompressCoef());
+                $dateProjectStatus
+                    ->updateStretchPoint($projectStatus->getCompressCoef());
             }
         }
 
         $this->groupBySprint();
-        var_dump(array_keys($this->dateStatusesGroupBySprint));
+//        var_dump(array_keys($this->dateStatusesGroupBySprint));
 //        var_dump($this->dateStatusesGroupBySprint);
 //        var_dump($this->projectStatusManager->getProjectStatuses());
 //        var_dump($this->dateStatuses);
+//        $a = collect($this->dateStatuses)
+//            ->map(fn(DateStatus $dateStatus) => $dateStatus->getDateProjectStatuses())
+//            ->flatten()
+//            ->groupBy(fn(DateProjectStatus $dateProjectStatus) => $dateProjectStatus->getSlug())
+//            ->map(function (Collection $items) {
+//                return $items->reduce(
+//                    fn($acc, DateProjectStatus $dateProjectStatus) => $dateProjectStatus->getPoint() + $acc,
+//                    0
+//                );
+//            })
+//            ->all();
+//        var_dump($a);
     }
 
     private function _createSimpleDateStatuses(CarbonImmutable $theDate)
@@ -118,6 +133,8 @@ class Context
 
         $dateStatus = new DateStatus($theDate, $limitPoint);
 
+        $reallocate = false;
+
         /** @var ProjectStatus $projectStatus */
         foreach ($this->projectStatusManager->getProjectStatuses() as $projectStatus) {
             if ($projectStatus->isAssigned()) {
@@ -126,18 +143,27 @@ class Context
 
             // プロジェクトの割当比率で稼働可能工数を算出
             $point = $projectStatus->getCurrentRatio()
-                ? $projectStatus->computePointWithRatio($limitPoint, false)
+                ? $projectStatus->computePointWithRatio($limitPoint)
                 : 0;
 
             $compressPoint = $projectStatus->getCurrentRatio()
-                ? $projectStatus->computePointWithRatio($limitPoint, true)
+                ? $projectStatus->computeCompressPointWithRatio($limitPoint)
                 : 0;
+
+            $stretchPoint = $projectStatus->getCurrentRatio()
+                ? $projectStatus->computeStretchPointWithRatio($limitPoint)
+                : 0;
+
+            if ($point > $projectStatus->getLeftPoint()) {
+                $point = $projectStatus->getLeftPoint();
+                $reallocate = true;
+            }
 
             $dateProjectStatus = new DateProjectStatus(
                 $projectStatus->getSlug(),
                 $projectStatus->getCurrentRatio(),
                 $point,
-                $compressPoint
+                $stretchPoint
             );
 
             $dateStatus->addDateProjectStatus($dateProjectStatus);
@@ -148,6 +174,10 @@ class Context
             if ($project->getEndDate() && $project->getEndDate()->lte($theDate)) {
                 $projectStatus->assigned();
             }
+        }
+
+        if ($reallocate) {
+
         }
 
         $this->dateStatuses[$theDate->format('Y-m-d')] = $dateStatus;
@@ -162,6 +192,10 @@ class Context
         foreach ($this->projectStatusManager->getProjectStatuses() as $projectStatus) {
             if ($projectStatus->isAssigned()) {
                 continue;
+            }
+
+            if ($projectStatus->getAllocatedTotalPoint() >= $projectStatus->getTotalPoint()) {
+                $projectStatus->assigned();
             }
 
             $project = $this->projectManager->getProject($projectStatus->getSlug());
@@ -180,7 +214,7 @@ class Context
             return;
         }
 
-        $surplus = bcdiv($totalUnusedRatio, $projectCountHavingTaskToBeAssigned, 3);
+        $surplus = Calculator::floatDiv($totalUnusedRatio, $projectCountHavingTaskToBeAssigned);
 
         $this->projectStatusManager
             ->getProjectStatuses()
@@ -231,11 +265,36 @@ class Context
     }
 
     /**
+     * @return ProjectManager
+     */
+    public function getProjectManager(): ProjectManager
+    {
+        return $this->projectManager;
+    }
+
+    /**
+     * @return Config
+     */
+    public function getConfig(): Config
+    {
+        return $this->config;
+    }
+
+    /**
      * @return DateStatus[]
      */
     public function getDateStatuses(): array
     {
         return $this->dateStatuses;
+    }
+
+    /**
+     * @param  string  $key
+     * @return DateStatus|null
+     */
+    public function getDateStatus(string $key): ?DateStatus
+    {
+        return $this->dateStatuses[$key] ?? null;
     }
 
     /**

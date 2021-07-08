@@ -2,12 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\Domains\Models\Allocators\AllocationManager;
 use App\Domains\Models\Config;
 use App\Domains\Models\Context;
 use App\Domains\Models\Project;
 use App\Domains\Models\ProjectManager;
 use App\Domains\Models\ProjectStatusManager;
 use App\Domains\Models\Task;
+use App\Domains\Models\TaskStatusManager;
 use App\Miscs\CsvReader;
 use Illuminate\Console\Command;
 
@@ -53,7 +55,7 @@ class AllocatorCommand extends Command
     {
         $config = new Config(
             today('Asia/Tokyo')->format('Y-m-d'),
-            8,
+            8 * 1000,
             2,
             [0, 6],
             1
@@ -73,8 +75,8 @@ class AllocatorCommand extends Command
         $context = new Context($projectStatusManager, $projectManager, $config);
         $context->createSimpleDateStatuses();
 
-
-
+        $allocator = new AllocationManager($context);
+        $allocator->handle();
     }
 
     private function readProjects(): array

@@ -4,12 +4,13 @@
 namespace App\Domains\Models;
 
 
+use App\Miscs\Calculator;
 use Carbon\CarbonImmutable;
 
 class Task
 {
 
-    const ONE_POINT_STANDS_FOR = 8;
+    const ONE_POINT_STANDS_FOR = 8 * 1000;
 
     /**
      * @var Project
@@ -49,7 +50,7 @@ class Task
     /**
      * @var float
      */
-    private float $allocationPoint = 0;
+    private float $allocatedPoint = 0;
 
     /**
      * Task constructor.
@@ -133,18 +134,28 @@ class Task
     /**
      * @return float
      */
-    public function getAllocationPoint(): float
+    public function getAllocatedPoint(): float
     {
-        return $this->allocationPoint;
+        return $this->allocatedPoint;
     }
 
     /**
-     * @param  CarbonImmutable|null  $date
+     * @param  CarbonImmutable  $date
      * @return Task
      */
-    public function setDate(?CarbonImmutable $date): static
+    public function setDate(CarbonImmutable $date): static
     {
         $this->date = $date;
+        return $this;
+    }
+
+    /**
+     * @param  float|int  $allocatedPoint
+     * @return $this
+     */
+    public function setAllocatedPoint(float|int $allocatedPoint): static
+    {
+        $this->allocatedPoint = $allocatedPoint;
         return $this;
     }
 
@@ -154,12 +165,7 @@ class Task
      */
     public function addAllocationPoint(float $point): static
     {
-        $point = bcadd(
-            $this->allocationPoint,
-            $point,
-            3
-        );
-        $this->allocationPoint = ceil($point, 3);
+        $this->allocatedPoint = round(Calculator::floatAdd($this->allocatedPoint, $point), 3);
 
         return $this;
     }
