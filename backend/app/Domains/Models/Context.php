@@ -6,7 +6,6 @@ namespace App\Domains\Models;
 
 use App\Miscs\Calculator;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Collection;
 
 class Context
 {
@@ -73,9 +72,6 @@ class Context
             $i++;
         }
 
-//        var_dump($this->dateStatuses);
-//        var_dump($this->projectStatusManager->getProjectStatuses());
-
         // 全てのタスクを完了できないまま期限に到達してしまったプロジェクトに、
         // 期限までに終了する係数を算出して、日毎の割当ポイントを算出
 
@@ -92,22 +88,6 @@ class Context
         }
 
         $this->groupBySprint();
-//        var_dump(array_keys($this->dateStatusesGroupBySprint));
-//        var_dump($this->dateStatusesGroupBySprint);
-//        var_dump($this->projectStatusManager->getProjectStatuses());
-//        var_dump($this->dateStatuses);
-//        $a = collect($this->dateStatuses)
-//            ->map(fn(DateStatus $dateStatus) => $dateStatus->getDateProjectStatuses())
-//            ->flatten()
-//            ->groupBy(fn(DateProjectStatus $dateProjectStatus) => $dateProjectStatus->getSlug())
-//            ->map(function (Collection $items) {
-//                return $items->reduce(
-//                    fn($acc, DateProjectStatus $dateProjectStatus) => $dateProjectStatus->getPoint() + $acc,
-//                    0
-//                );
-//            })
-//            ->all();
-//        var_dump($a);
     }
 
     private function _createSimpleDateStatuses(CarbonImmutable $theDate)
@@ -146,14 +126,6 @@ class Context
                 ? $projectStatus->computePointWithRatio($limitPoint)
                 : 0;
 
-            $compressPoint = $projectStatus->getCurrentRatio()
-                ? $projectStatus->computeCompressPointWithRatio($limitPoint)
-                : 0;
-
-            $stretchPoint = $projectStatus->getCurrentRatio()
-                ? $projectStatus->computeStretchPointWithRatio($limitPoint)
-                : 0;
-
             if ($point > $projectStatus->getLeftPoint()) {
                 $point = $projectStatus->getLeftPoint();
                 $reallocate = true;
@@ -163,7 +135,7 @@ class Context
                 $projectStatus->getSlug(),
                 $projectStatus->getCurrentRatio(),
                 $point,
-                $stretchPoint
+                $point
             );
 
             $dateStatus->addDateProjectStatus($dateProjectStatus);

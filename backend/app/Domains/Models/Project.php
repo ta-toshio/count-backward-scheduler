@@ -4,6 +4,7 @@
 namespace App\Domains\Models;
 
 
+use App\Miscs\Calculator;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 
@@ -80,14 +81,14 @@ class Project
         if ($static) {
             return collect($this->tasks)
                 ->reduce(
-                    fn($total_point, Task $task) => bcadd($total_point, $task->getPoint(), 3),
+                    fn($totalPoint, Task $task) => Calculator::floatAdd($totalPoint, $task->getPoint()),
                     0
                 );
         }
         return collect($this->tasks)
             ->filter(fn(Task $task) => !$task->isStatic())
             ->reduce(
-                fn($total_point, Task $task) => bcadd($total_point, $task->getPoint(), 3),
+                fn($totalPoint, Task $task) => Calculator::floatAdd($totalPoint, $task->getPoint()),
                 0
             );
     }

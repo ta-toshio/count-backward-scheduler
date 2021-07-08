@@ -4,6 +4,7 @@
 namespace App\Domains\Models;
 
 
+use App\Miscs\Calculator;
 use Illuminate\Support\Collection;
 
 class ProjectStatusManager
@@ -70,8 +71,7 @@ class ProjectStatusManager
         return $this->getProjectStatuses()
             ->filter(fn(ProjectStatus $projectStatus) => $projectStatus->isAssigned())
             ->reduce(
-                fn($sum, ProjectStatus $projectContext) =>
-                round(bcadd($sum, $projectContext->getRatio(), 3), 3),
+                fn($sum, ProjectStatus $projectContext) => Calculator::floatAdd($sum, $projectContext->getRatio()),
                 0
             );
     }

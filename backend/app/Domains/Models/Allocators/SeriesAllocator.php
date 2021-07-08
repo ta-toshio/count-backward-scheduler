@@ -5,16 +5,11 @@ namespace App\Domains\Models\Allocators;
 
 
 use App\Domains\Models\Context;
-use App\Domains\Models\DateProjectStatus;
-use App\Domains\Models\DateStatus;
 use App\Domains\Models\DateTask;
 use App\Domains\Models\SprintProjectStatus;
 use App\Domains\Models\SprintProjectStatusManager;
-use App\Domains\Models\Task;
 use App\Domains\Models\TaskStatus;
 use App\Domains\Models\TaskStatusManager;
-use App\Miscs\Calculator;
-use Carbon\CarbonImmutable;
 
 class SeriesAllocator implements AllocatorInterface
 {
@@ -34,98 +29,24 @@ class SeriesAllocator implements AllocatorInterface
     public function handle()
     {
         $dateStatusesGroupBySprint = $this->context->getDateStatusesGroupBySprint();
-        $acc = 0;
-//        foreach ($dateStatusesGroupBySprint as $sprint => $dateStatuses) {
-//            var_dump('-------------------');
-//            var_dump($sprint);
-//            /** @var DateStatus $dateStatus */
-//            foreach ($dateStatuses as $dateStatus) {
-//                /** @var DateProjectStatus $dateProjectStatus */
-//                foreach ($dateStatus->getDateProjectStatuses() as $dateProjectStatus) {
-//                    if ($dateProjectStatus->getSlug() === 'search-brand') {
-//                        $acc += $dateProjectStatus->getPoint();
-//                        var_dump(
-//                            $dateProjectStatus->getPoint()
-//                            . ' '
-//                            . $acc
-//                        );
-//                    }
-//                }
-//            }
-//        }
-//        var_dump($acc);
 
-        $acc = 0;
         $dateTasks = [];
         foreach ($dateStatusesGroupBySprint as $sprint => $dateStatuses) {
 
             // スプリント期間内で各プロジェクトの合計を算出
             list($start, $end) = explode('_', $sprint);
             $sprintProjectStatusManager = $this->createSprintProjectStatusManager($start, $end, $dateStatuses);
-//            var_dump('------------------');
-//            var_dump($sprint);
-//            /** @var SprintProjectStatus $sprintProjectStatus */
-//            foreach ($sprintProjectStatusManager->getSprintProjectStatuses() as $sprintProjectStatus) {
-//                var_dump(
-//                    $sprintProjectStatus->getProjectSlug() . ' ' .
-//                    $sprintProjectStatus->getPoint() . ' ' .
-//                    $sprintProjectStatus->getStretchPoint()
-//                );
-//            }
 
             $startDate = current($dateStatuses)->getDate();
             $endDate = last($dateStatuses)->getDate();
-//            var_dump($startDate->format('Y-m-d'));
 
             // 算出したポイント分のタスク(TaskStatus)を取得
             // SprintProjectStatusのTaskStatusに格納
             /** @var SprintProjectStatus $sprintProjectStatus */
             foreach ($sprintProjectStatusManager->getSprintProjectStatuses() as $sprintProjectStatus) {
-//                var_dump('-----------------');
-//                var_dump($sprintProjectStatus->getProjectSlug());
-//                var_dump($sprintProjectStatus->getPoint());
-//                var_dump($sprintProjectStatus->getStretchPoint());
-//                if ($startDate->format('Y-m-d') === '2021-11-22') {
-//                    var_dump($sprintProjectStatus->getProjectSlug());
-//                    var_dump($sprintProjectStatus->getPoint());
-//                    var_dump($sprintProjectStatus->getStretchPoint());
-//                }
                 $sprintProjectStatus->setTasksForPoint($this->taskStatusManager);
             }
 
-//            var_dump('------------------');
-//            var_dump($sprint);
-//            foreach ($sprintProjectStatusManager->getSprintProjectStatuses() as $sprintProjectStatus) {
-//                /** @var TaskStatus $taskStatus */
-//                if ($sprintProjectStatus->getProjectSlug() === 'search-brand') {
-//                    var_dump($sprintProjectStatus->getPoint());
-//                }
-//                foreach ($sprintProjectStatus->getTaskStatuses() as $taskStatus) {
-////                    if ($taskStatus->getProjectSlug() === 'code-index') {
-////                        $acc += $taskStatus->getPoint();
-////                        var_dump($taskStatus->getPoint() . ' ' . $acc);
-////                    }
-//                    if ($taskStatus->getProjectSlug() === 'search-brand') {
-//                        $acc += $taskStatus->getPoint();
-//                        var_dump($taskStatus->getTitle() . ' ' . $taskStatus->getCompressPoint() . ' ' . $acc);
-//                    }
-//                }
-//                var_dump($acc);
-//            }
-
-            // DateTaskを生成
-            // DateTaskにSprintProjectStatusのTaskStatusを利用してTaskを割り当てていく
-            // TaskStatusは割り当てたら割り当て済みにする
-//            if ($startDate->format('Y-m-d') === '2021-10-25') {
-//                foreach ($sprintProjectStatusManager->getSprintProjectStatuses() as $sprintProjectStatus) {
-//                    var_dump($sprintProjectStatus->getProjectSlug());
-//                    /** @var TaskStatus $taskStatus */
-//                    foreach ($sprintProjectStatus->getTaskStatuses() as $taskStatus) {
-//                        var_dump($taskStatus->getTitle());
-//                        var_dump($taskStatus->getCompressPoint());
-//                    }
-//                }
-//            }
             $i = 0;
             while (true) {
                 $theDate = $startDate->addDays($i);
@@ -141,54 +62,24 @@ class SeriesAllocator implements AllocatorInterface
                 }
                 $i++;
             }
-
-//            if ($end === '2021-08-01') {
-//                exit;
-//            }
         }
 
-        foreach ($dateTasks as $dateTask) {
-            var_dump('------------');
-            var_dump($dateTask->getDate()->toDateTimeLocalString());
-            /** @var Task $task */
-            foreach ($dateTask->getTasks() as $task) {
-//                if ($task->getProject()->getSlug() !== 'search-brand') {
-//                    continue;
-//                }
-                var_dump($task->getProject()->getSlug() .
-                    ' '.
-                    $task->getTitle() .
-                    ' '.
-                    $task->getPoint() .
-                    ' ' .
-                    $task->getAllocatedPoint());
-            }
-        }
-
-//        var_dump('');
-//        var_dump('');
-//        var_dump('');
-//        var_dump('');
-//        var_dump('');
-//        $acc = 0;
 //        foreach ($dateTasks as $dateTask) {
 //            var_dump('------------');
 //            var_dump($dateTask->getDate()->toDateTimeLocalString());
-//            /** @var Task $task */
 //            foreach ($dateTask->getTasks() as $task) {
-//                if ($task->getProject()->getSlug() === 'code-index') {
-//                    var_dump($task->getProject()->getSlug() .
-//                        ' '.
-//                        $task->getTitle() .
-//                        ' ' .
-//                        $task->getPoint() .
-//                        ' ' .
-//                        $task->getAllocatedPoint());
-//                    $acc += $task->getAllocatedPoint();
-//                }
+////                if ($task->getProject()->getSlug() !== 'search-brand') {
+////                    continue;
+////                }
+//                var_dump($task->getProject()->getSlug() .
+//                    ' '.
+//                    $task->getTitle() .
+//                    ' '.
+//                    $task->getPoint() .
+//                    ' ' .
+//                    $task->getAllocatedPoint());
 //            }
 //        }
-//        var_dump($acc);
     }
 
     public function assign(DateTask $dateTask, SprintProjectStatusManager $sprintProjectStatusManager, $depth = 0)
@@ -200,13 +91,8 @@ class SeriesAllocator implements AllocatorInterface
 
         $taskStatus = $this->getNextTask($sprintProjectStatusManager);
         if (!$taskStatus) {
-//            /** @var Task $task */
-//            foreach ($dateTask->getTasks() as $task) {
-//                var_dump($task->getTitle() . ' ' . $task->getPoint() . ' ' . $task->getAllocatedPoint());
-//            }
             return;
         }
-
 
         $sprintProjectStatus = $sprintProjectStatusManager->getSprintProjectStatus($taskStatus->getProjectSlug());
 
@@ -282,9 +168,6 @@ class SeriesAllocator implements AllocatorInterface
         /** @var SprintProjectStatus $sprintProjectStatus */
         foreach ($sprintProjectStatusManager->getSprintProjectStatuses() as $sprintProjectStatus) {
             if ($sprintProjectStatus->getLeftPoint() <= 0) {
-//                if ($sprintProjectStatus->getProjectSlug() === 'code-index') {
-//                    var_dump($sprintProjectStatus->getPoint());
-//                }
                 continue;
             }
             $taskStatus = $sprintProjectStatus->findFirstFreeTask();

@@ -68,7 +68,7 @@ class ProjectStatus
 
     private function _computePointWithRatio(float $point): float
     {
-         return (float) Calculator::floatMul(
+         return Calculator::floatMul(
             $point,
             Calculator::floatDiv($this->getCurrentRatio(), 100)
         );
@@ -105,7 +105,6 @@ class ProjectStatus
     {
         $this->compressCoef = round(
             Calculator::floatAdd(Calculator::floatDiv($this->totalPoint, $this->allocatedTotalPoint), 0.01),
-//            Calculator::floatDiv($this->totalPoint, $this->allocatedTotalPoint),
             3
         );
     }
