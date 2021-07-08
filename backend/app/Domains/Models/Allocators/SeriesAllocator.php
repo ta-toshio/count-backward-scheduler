@@ -65,21 +65,30 @@ class SeriesAllocator implements AllocatorInterface
         }
 
 //        foreach ($dateTasks as $dateTask) {
-//            var_dump('------------');
-//            var_dump($dateTask->getDate()->toDateTimeLocalString());
-//            foreach ($dateTask->getTasks() as $task) {
-////                if ($task->getProject()->getSlug() !== 'search-brand') {
-////                    continue;
-////                }
-//                var_dump($task->getProject()->getSlug() .
-//                    ' '.
-//                    $task->getTitle() .
-//                    ' '.
-//                    $task->getPoint() .
-//                    ' ' .
-//                    $task->getAllocatedPoint());
+//            if ($dateTask->getPoint() != $dateTask->getAllocatedPoint()) {
+//                var_dump('------------');
+//                var_dump($dateTask->getDate()->toDateTimeLocalString());
+//                var_dump($dateTask->getPoint());
+//                var_dump($dateTask->getAllocatedPoint());
 //            }
 //        }
+
+        foreach ($dateTasks as $dateTask) {
+            var_dump('------------');
+            var_dump($dateTask->getDate()->toDateTimeLocalString());
+            foreach ($dateTask->getTasks() as $task) {
+//                if ($task->getProject()->getSlug() !== 'search-brand') {
+//                    continue;
+//                }
+                var_dump($task->getProject()->getSlug() .
+                    ' '.
+                    $task->getTitle() .
+                    ' '.
+                    $task->getPoint() .
+                    ' ' .
+                    $task->getAllocatedPoint());
+            }
+        }
     }
 
     public function assign(DateTask $dateTask, SprintProjectStatusManager $sprintProjectStatusManager, $depth = 0)

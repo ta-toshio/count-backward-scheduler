@@ -9,19 +9,19 @@ class Calculator
 
     public static function floatAdd(float|int $a, float|int $b, $precision = 1): float|int
     {
-        return $a + $b;
+        return round($a + $b, $precision);
 //        return (float) bcadd($a, $b, $precision);
     }
 
     public static function floatSub(float|int $a, float|int $b, $precision = 1): float|int
     {
-        return $a - $b;
+        return round($a - $b, $precision);
 //        return (float) bcsub($a, $b, $precision);
     }
 
-    public static function floatMul($a, $b, $precision = 1): float
+    public static function floatMul($a, $b, $precision = 0): float
     {
-        return round($a * $b);
+        return round($a * $b, $precision);
 //        return (float) bcmul($a, $b, $precision);
     }
 

@@ -34,7 +34,7 @@ class ProjectStatus
      */
     public function addAllocatedTotalPoint(float $point): static
     {
-        $this->allocatedTotalPoint = round(Calculator::floatAdd($this->allocatedTotalPoint, $point), 3);
+        $this->allocatedTotalPoint = Calculator::floatAdd($this->allocatedTotalPoint, $point);
 
         if ($this->allocatedTotalPoint >= $this->totalPoint) {
             $this->assigned();
@@ -51,26 +51,10 @@ class ProjectStatus
 
     public function computePointWithRatio(float $thePoint): float
     {
-        return $this->_computePointWithRatio($thePoint);
-    }
-
-    public function computeStretchPointWithRatio(float $thePoint): float
-    {
-        $thisProjectPoint = $this->_computePointWithRatio($thePoint);
-        return (float) Calculator::floatMul($thisProjectPoint, $this->getCompressCoef());
-    }
-
-    public function computeCompressPointWithRatio(float $thePoint): float
-    {
-        $thisProjectPoint = $this->_computePointWithRatio($thePoint);
-        return (float) Calculator::floatDiv($thisProjectPoint, $this->getCompressCoef());
-    }
-
-    private function _computePointWithRatio(float $point): float
-    {
-         return Calculator::floatMul(
-            $point,
-            Calculator::floatDiv($this->getCurrentRatio(), 100)
+        return Calculator::floatMul(
+            $thePoint,
+            Calculator::floatDiv($this->getCurrentRatio(), 100),
+            3
         );
     }
 
@@ -103,10 +87,7 @@ class ProjectStatus
 
     public function computeCompressCoef()
     {
-        $this->compressCoef = round(
-            Calculator::floatAdd(Calculator::floatDiv($this->totalPoint, $this->allocatedTotalPoint), 0.01),
-            3
-        );
+        $this->compressCoef = round(Calculator::floatDiv($this->totalPoint, $this->allocatedTotalPoint), 3);
     }
 
     /**

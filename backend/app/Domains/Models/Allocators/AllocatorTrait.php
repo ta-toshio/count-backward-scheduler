@@ -30,16 +30,9 @@ trait AllocatorTrait
                     0
                 );
 
-                $stretchPoint = $items->reduce(
-                    fn($accumulated, DateProjectStatus $dateProjectStatus) =>
-                        Calculator::floatAdd($accumulated, $dateProjectStatus->getStretchPoint()),
-                    0
-                );
-
                 return new SprintProjectStatus(
                     $projectSlug,
                     $point,
-                    $stretchPoint
                 );
             });
         return new SprintProjectStatusManager($start, $end, $sprintProjectStatuses->toArray());

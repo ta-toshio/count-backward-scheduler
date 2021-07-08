@@ -12,19 +12,16 @@ class SprintProjectStatus
 
     private string $projectSlug;
     private float $point;
-    private float $stretchPoint;
     private float $allocatedPoint = 0;
     private array $taskStatuses = [];
 
     public function __construct(
         string $projectSlug,
         float $point,
-        float $stretchPoint
     )
     {
         $this->projectSlug = $projectSlug;
         $this->point = $point;
-        $this->stretchPoint = $stretchPoint;
     }
 
     public function findFirstFreeTask()
@@ -52,32 +49,6 @@ class SprintProjectStatus
             }
         }
         return $this->getTaskStatuses();
-    }
-
-    public function getTotalTaskStatusPoint(): array
-    {
-        $point = $this->getTaskStatuses()
-            ->reduce(
-                fn(float $accumulated, TaskStatus $taskStatus) =>
-                    Calculator::floatAdd($accumulated, $taskStatus->getPoint()),
-                0
-            );
-
-        $compressPoint = $this->getTaskStatuses()
-            ->reduce(
-                fn(float $accumulated, TaskStatus $taskStatus) =>
-                Calculator::floatAdd($accumulated, $taskStatus->getCompressPoint()),
-                0
-            );
-
-        $stretchPoint = $this->getTaskStatuses()
-            ->reduce(
-                fn(float $accumulated, TaskStatus $taskStatus) =>
-                Calculator::floatAdd($accumulated, $taskStatus->getStretchPoint()),
-                0
-            );
-
-        return [$point, $compressPoint, $stretchPoint];
     }
 
     /**
@@ -125,14 +96,6 @@ class SprintProjectStatus
     public function getPoint(): float
     {
         return $this->point;
-    }
-
-    /**
-     * @return float
-     */
-    public function getStretchPoint(): float
-    {
-        return $this->stretchPoint;
     }
 
     /**

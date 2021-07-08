@@ -9,7 +9,6 @@ use App\Domains\Models\Project;
 use App\Domains\Models\ProjectManager;
 use App\Domains\Models\ProjectStatusManager;
 use App\Domains\Models\Task;
-use App\Domains\Models\TaskStatusManager;
 use App\Miscs\CsvReader;
 use Illuminate\Console\Command;
 
