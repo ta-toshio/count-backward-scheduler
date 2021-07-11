@@ -10,9 +10,9 @@ class Config
 {
 
     /**
-     * @var CarbonImmutable|null
+     * @var CarbonImmutable
      */
-    private ?CarbonImmutable $startDate;
+    private CarbonImmutable $startDate;
 
     /**
      * @var int
@@ -33,26 +33,29 @@ class Config
      * @var int
      */
     private int $sprint;
+    private int $oneDayAbilityHour;
 
     public function __construct(
         string $startDate,
         int $oneDayAbilityPoint,
         int $oneDayAbilityProject,
         array $holidays,
-        int $sprint
+        int $sprint,
+        int $oneDayAbilityHour
     ) {
 
-        $this->startDate = $startDate ? CarbonImmutable::parse($startDate): null;;
+        $this->startDate = CarbonImmutable::parse($startDate);
         $this->oneDayAbilityPoint = $oneDayAbilityPoint;
         $this->oneDayAbilityProject = $oneDayAbilityProject;
         $this->holidays = $holidays;
         $this->sprint = $sprint;
+        $this->oneDayAbilityHour = $oneDayAbilityHour;
     }
 
     /**
-     * @return CarbonImmutable|null
+     * @return CarbonImmutable
      */
-    public function getStartDate(): ?CarbonImmutable
+    public function getStartDate(): CarbonImmutable
     {
         return $this->startDate;
     }
@@ -87,6 +90,14 @@ class Config
     public function getSprint(): int
     {
         return $this->sprint;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOneDayAbilityHour(): int
+    {
+        return $this->oneDayAbilityHour;
     }
 
 }

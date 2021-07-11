@@ -8,7 +8,6 @@ use App\Domains\Models\Context;
 use App\Domains\Models\DateTask;
 use App\Domains\Models\SprintProjectStatus;
 use App\Domains\Models\SprintProjectStatusManager;
-use App\Domains\Models\Task;
 use App\Domains\Models\TaskStatus;
 use App\Domains\Models\TaskStatusManager;
 
@@ -27,7 +26,7 @@ class SeriesAllocator implements AllocatorInterface
         $this->taskStatusManager = $taskStatusManager;
     }
 
-    public function handle()
+    public function handle(): array
     {
         $dateStatusesGroupBySprint = $this->context->getDateStatusesGroupBySprint();
 
@@ -78,22 +77,24 @@ class SeriesAllocator implements AllocatorInterface
 //            }
 //        }
 
-        foreach ($dateTasks as $dateTask) {
-            var_dump('------------');
-            var_dump($dateTask->getDate()->toDateTimeLocalString());
-            foreach ($dateTask->getTasks() as $task) {
-//                if ($task->getProject()->getSlug() !== 'search-brand') {
-//                    continue;
-//                }
-                var_dump($task->getProject()->getSlug() .
-                    ' '.
-                    $task->getTitle() .
-                    ' '.
-                    $task->getPoint() .
-                    ' ' .
-                    $task->getAllocatedPoint());
-            }
-        }
+//        foreach ($dateTasks as $dateTask) {
+//            var_dump('------------');
+//            var_dump($dateTask->getDate()->toDateTimeLocalString());
+//            foreach ($dateTask->getTasks() as $task) {
+////                if ($task->getProject()->getSlug() !== 'search-brand') {
+////                    continue;
+////                }
+//                var_dump($task->getProject()->getSlug() .
+//                    ' '.
+//                    $task->getTitle() .
+//                    ' '.
+//                    $task->getPoint() .
+//                    ' ' .
+//                    $task->getAllocatedPoint());
+//            }
+//        }
+
+        return $dateTasks;
     }
 
     public function assign(DateTask $dateTask, SprintProjectStatusManager $sprintProjectStatusManager)

@@ -11,7 +11,7 @@ interface AllocatorInterface
 {
     public function support(string $identifier): bool;
 
-    public function handle();
+    public function handle(): array;
 
     public function assign(DateTask $dateTask, SprintProjectStatusManager $sprintProjectStatusManager);
 }

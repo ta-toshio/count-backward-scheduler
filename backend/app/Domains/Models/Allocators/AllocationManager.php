@@ -26,7 +26,7 @@ class AllocationManager
 
         $allocate = $this->getAllocator();
         $allocator = new $allocate($this->context, $taskStatusManager);
-        $allocator->handle();
+        return $allocator->handle();
     }
 
     /**
