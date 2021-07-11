@@ -161,3 +161,7 @@ video,flutter,,The Complete 2021 Flutter Development Bootcamp with Dart,,1,4,#RE
 misc,english,,英語,,20,0.0625,#REF!,,643a7a28-ec7e-4dc2-ae91-ad83774ad7ed,,,,"0,1,2,3,4,5"
 misc,program,laravel,laracasts,,15,0.0625,#REF!,,23b27ffc-7e23-47c4-b65c-ee03c87b5d63,,,,"0,1,2,3,4,5"
 video,program,laravel,laracasts,,15,0.0625,#REF!,,23b27ffc-7e23-47c4-b65c-ee03c87b5d62,,,,"2"
+test,test_class1,test_class2,test task1,,15,0.5,#REF!,,,,,,
+test,test_class1,test_class2,test task2,,15,0.5,#REF!,,,,,,
+test,test_class1,test_class2,test task3,,15,0.5,#REF!,,,,,,
+test,test_class1,test_class2,test task4,,15,0.5,#REF!,,,,,,

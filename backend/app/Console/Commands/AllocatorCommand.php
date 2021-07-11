@@ -19,7 +19,7 @@ class AllocatorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'task:allocate';
+    protected $signature = 'task:allocate {--start=}';
 
     /**
      * The console command description.
@@ -52,8 +52,13 @@ class AllocatorCommand extends Command
      */
     public function handle()
     {
+        $start = $this->option('start');
+        if (!$start) {
+            $start = today('Asia/Tokyo')->format('Y-m-d');
+        }
+
         $config = new Config(
-            today('Asia/Tokyo')->format('Y-m-d'),
+            $start,
             8 * 1000,
             2,
             [0, 6],
@@ -76,6 +81,8 @@ class AllocatorCommand extends Command
 
         $allocator = new AllocationManager($context);
         $allocator->handle();
+
+        return 0;
     }
 
     private function readProjects(): array

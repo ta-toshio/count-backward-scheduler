@@ -41,8 +41,11 @@ class Context
      * @param  ProjectManager  $projectManager
      * @param  Config  $config
      */
-    public function __construct(ProjectStatusManager $projectStatusManager, ProjectManager $projectManager, Config $config)
-    {
+    public function __construct(
+        ProjectStatusManager $projectStatusManager,
+        ProjectManager $projectManager,
+        Config $config
+    ) {
         $this->projectStatusManager = $projectStatusManager;
         $this->projectManager = $projectManager;
         $this->config = $config;
@@ -177,17 +180,23 @@ class Context
             if ($project->getEndDate() && $project->getEndDate()->lte($theDate)) {
                 $projectStatus->assigned();
             }
+
+            if (!$theDate->between($projectStatus->getStart(), $projectStatus->getEnd())) {
+                $projectStatus->setCurrentRatio(0);
+            }
         }
 
         // 割当済みのプロジェクトの割当比率を分配
         $totalRatio = $this->projectStatusManager
-            ->findAllProjectHavingTaskToBeAssigned()
+            ->findAllProjectHavingTaskToBeAssigned($theDate)
             ->reduce(fn($acc, ProjectStatus $projectStatus) => $acc + $projectStatus->getRatio(), 0);
 
         $this->projectStatusManager
-            ->findAllProjectHavingTaskToBeAssigned()
-            ->map(function (ProjectStatus $projectStatus) use($totalRatio) {
-                return $projectStatus->setCurrentRatio(round($projectStatus->getRatio() / $totalRatio * 100, 3));
+            ->findAllProjectHavingTaskToBeAssigned($theDate)
+            ->map(function (ProjectStatus $projectStatus) use ($totalRatio) {
+                return $projectStatus->setCurrentRatio(
+                    round($projectStatus->getRatio() / $totalRatio * 100, 3)
+                );
             });
     }
 
@@ -195,8 +204,8 @@ class Context
     {
         // 割当ポイントより残ポイントが少なかった場合の、余ったポイントを、他の有効なプロジェクトに再分配
         $dateStatus->getDateProjectStatuses()
-            ->filter(fn(DateProjectStatus $dateProjectStatus)
-            => !$this->projectStatusManager->getProjectStatus($dateProjectStatus->getSlug())->isAssigned())
+            ->filter(fn(DateProjectStatus $dateProjectStatus
+            ) => !$this->projectStatusManager->getProjectStatus($dateProjectStatus->getSlug())->isAssigned())
             ->map(function (DateProjectStatus $dateProjectStatus) use ($surplus) {
                 $ratio = $this->projectStatusManager
                     ->getProjectStatus($dateProjectStatus->getSlug())

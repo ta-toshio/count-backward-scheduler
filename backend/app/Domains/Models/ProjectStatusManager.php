@@ -5,6 +5,7 @@ namespace App\Domains\Models;
 
 
 use App\Miscs\Calculator;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 
 class ProjectStatusManager
@@ -34,7 +35,9 @@ class ProjectStatusManager
             $projectStatuses[$project->getSlug()] = new ProjectStatus(
                 $project->getSlug(),
                 $project->getTotalPoInt(),
-                $project->getAllocationRatio()
+                $project->getAllocationRatio(),
+                $project->getStartDate(),
+                $project->getEndDate()
             );
         }
 
@@ -58,22 +61,13 @@ class ProjectStatusManager
     }
 
     /**
+     * @param  CarbonImmutable  $date
      * @return Collection
      */
-    public function findAllProjectHavingTaskToBeAssigned(): Collection
+    public function findAllProjectHavingTaskToBeAssigned(CarbonImmutable $date): Collection
     {
         return $this->getProjectStatuses()
-            ->filter(fn(ProjectStatus $projectStatus) => !$projectStatus->isAssigned());
-    }
-
-    public function totalRatioOfProjectsAreAssigned()
-    {
-        return $this->getProjectStatuses()
-            ->filter(fn(ProjectStatus $projectStatus) => $projectStatus->isAssigned())
-            ->reduce(
-                fn($sum, ProjectStatus $projectContext) => Calculator::floatAdd($sum, $projectContext->getRatio()),
-                0
-            );
+            ->filter(fn(ProjectStatus $projectStatus) => $projectStatus->isThisActiveDay($date));
     }
 
     /**

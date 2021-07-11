@@ -5,6 +5,7 @@ namespace App\Domains\Models;
 
 
 use App\Miscs\Calculator;
+use Carbon\CarbonImmutable;
 
 class ProjectStatus
 {
@@ -17,15 +18,30 @@ class ProjectStatus
     private float $compressCoef = 1;
     private bool $isAssigned = false;
     private bool $isAssignedButNotFinished = false;
+    private ?CarbonImmutable $start = null;
+    private ?CarbonImmutable $end = null;
 
     public function __construct(
         string $slug,
         float $totalPoint,
         float $ratio,
+        $start = null,
+        $end = null
     ) {
         $this->slug = $slug;
         $this->totalPoint = $totalPoint;
         $this->ratio = $ratio;
+
+        if ($start && $start instanceof CarbonImmutable) {
+            $this->start = $start;
+        } else if ($start) {
+            $this->start = CarbonImmutable::parse($start);
+        }
+        if ($end && $end instanceof CarbonImmutable) {
+            $this->end = $end;
+        } else if ($end) {
+            $this->end = CarbonImmutable::parse($end);
+        }
     }
 
     /**
@@ -147,6 +163,22 @@ class ProjectStatus
     }
 
     /**
+     * @return CarbonImmutable|null
+     */
+    public function getStart(): ?CarbonImmutable
+    {
+        return $this->start;
+    }
+
+    /**
+     * @return CarbonImmutable|null
+     */
+    public function getEnd(): ?CarbonImmutable
+    {
+        return $this->end;
+    }
+
+    /**
      * @return bool
      */
     public function isAssigned(): bool
@@ -210,6 +242,23 @@ class ProjectStatus
     {
         $this->compressCoef = $compressCoef;
         return $this;
+    }
+
+    public function isThisActiveDay(CarbonImmutable $theDate): bool
+    {
+        if ($this->isAssigned()) {
+            return false;
+        }
+        if ($this->getStart() && $this->getEnd()) {
+            return $theDate->between($this->getStart(), $this->getEnd());
+        }
+        if ($this->getStart()) {
+            return $this->getStart()->lte($theDate);
+        }
+        if ($this->getEnd()) {
+            return $this->getEnd()->gte($theDate);
+        }
+        return true;
     }
 
 }
