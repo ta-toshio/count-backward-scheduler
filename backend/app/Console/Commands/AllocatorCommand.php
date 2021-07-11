@@ -9,6 +9,7 @@ use App\Domains\Models\Project;
 use App\Domains\Models\ProjectManager;
 use App\Domains\Models\ProjectStatusManager;
 use App\Domains\Models\Task;
+use App\Domains\UseCases\StoreMainData;
 use App\Miscs\CsvReader;
 use Illuminate\Console\Command;
 
@@ -34,15 +35,21 @@ class AllocatorCommand extends Command
     private CsvReader $csvReader;
 
     /**
+     * @var StoreMainData
+     */
+    private StoreMainData $storeMainData;
+
+    /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct(CsvReader $csvReader)
+    public function __construct(CsvReader $csvReader, StoreMainData $storeMainData)
     {
         parent::__construct();
 
         $this->csvReader = $csvReader;
+        $this->storeMainData = $storeMainData;
     }
 
     /**
@@ -62,7 +69,8 @@ class AllocatorCommand extends Command
             8 * 1000,
             2,
             [0, 6],
-            1
+            1,
+            8
         );
         $projects = $this->readProjects();
         $tasks = $this->readTasks($projects);
@@ -80,7 +88,9 @@ class AllocatorCommand extends Command
         $context->createSimpleDateStatuses();
 
         $allocator = new AllocationManager($context);
-        $allocator->handle();
+        $dateTasks = $allocator->handle();
+
+        $this->storeMainData->handle();
 
         return 0;
     }
