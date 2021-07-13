@@ -100,4 +100,5 @@ class Config
         return $this->oneDayAbilityHour;
     }
 
+
 }

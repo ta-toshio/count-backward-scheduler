@@ -13,7 +13,7 @@ class ProjectRepository
     public function upsert(int $userId, ProjectDomainModel $project)
     {
         return Project::updateOrCreate(
-            ['user_id' => $userId],
+            ['slug' => $project->getSlug()],
             [
                 'user_id' => $userId,
                 'slug' => $project->getSlug(),

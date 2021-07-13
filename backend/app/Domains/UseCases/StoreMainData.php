@@ -30,11 +30,21 @@ class StoreMainData
         $this->taskRepository = $taskRepository;
     }
 
-    public function handle(int $userId, Config $config, Project $project, Task $task)
+    /**
+     * @param  int  $userId
+     * @param  Config  $config
+     * @param  Project[] $projects
+     */
+    public function handle(int $userId, Config $config, array $projects)
     {
-        $config = $this->storeConfig($userId, $config);
-        $projectEloquent = $this->storeProject($userId, $project);
-        $this->storeTask($userId, $projectEloquent->id, $task);
+        $this->storeConfig($userId, $config);
+
+        foreach ($projects as $project) {
+            $projectEloquent = $this->storeProject($userId, $project);
+            $project->getTasks()
+                ->each(fn(Task $task) => $this->storeTask($userId, $projectEloquent->id, $task));
+            ;
+        }
     }
 
     public function storeConfig(int $userId, Config $config)

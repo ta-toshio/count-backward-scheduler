@@ -14,7 +14,7 @@ class CreateInitialMigration extends Migration
      */
     public function up()
     {
-        Schema::create('config', function (Blueprint $table) {
+        Schema::create('configs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->date('start_date');
@@ -68,9 +68,9 @@ class CreateInitialMigration extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('config');
-        Schema::dropIfExists('projects');
-        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('configs');
         Schema::dropIfExists('scheduled_tasks');
+        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('projects');
     }
 }

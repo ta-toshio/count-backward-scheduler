@@ -11,6 +11,7 @@ use App\Domains\Models\ProjectStatusManager;
 use App\Domains\Models\Task;
 use App\Domains\UseCases\StoreMainData;
 use App\Miscs\CsvReader;
+use App\Models\User;
 use Illuminate\Console\Command;
 
 class AllocatorCommand extends Command
@@ -90,7 +91,8 @@ class AllocatorCommand extends Command
         $allocator = new AllocationManager($context);
         $dateTasks = $allocator->handle();
 
-        $this->storeMainData->handle();
+        $user = User::first();
+        $this->storeMainData->handle($user->id, $config, $projects);
 
         return 0;
     }

@@ -21,7 +21,7 @@ class ConfigRepository
                 'hour_of_day' => $config->getOneDayAbilityHour(),
                 'point_of_day' => $config->getOneDayAbilityPoint(),
                 'project_of_day' => $config->getOneDayAbilityProject(),
-                'holidays' => $config->getHolidays(),
+                'holidays' => implode(',', $config->getHolidays()),
             ]
         );
     }
