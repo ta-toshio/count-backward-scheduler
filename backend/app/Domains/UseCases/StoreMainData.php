@@ -22,8 +22,7 @@ class StoreMainData
         ConfigRepository $configRepository,
         ProjectRepository $projectRepository,
         TaskRepository $taskRepository
-    )
-    {
+    ) {
 
         $this->configRepository = $configRepository;
         $this->projectRepository = $projectRepository;
@@ -33,7 +32,7 @@ class StoreMainData
     /**
      * @param  int  $userId
      * @param  Config  $config
-     * @param  Project[] $projects
+     * @param  Project[]  $projects
      */
     public function handle(int $userId, Config $config, array $projects)
     {
@@ -42,8 +41,10 @@ class StoreMainData
         foreach ($projects as $project) {
             $projectEloquent = $this->storeProject($userId, $project);
             $project->getTasks()
-                ->each(fn(Task $task) => $this->storeTask($userId, $projectEloquent->id, $task));
-            ;
+                ->each(function (Task $task) use ($userId, $projectEloquent) {
+                    $taskEloquentModel = $this->storeTask($userId, $projectEloquent->id, $task);
+                    $task->setTaskId($taskEloquentModel->id);
+                });
         }
     }
 

@@ -5,12 +5,14 @@ namespace App\Console\Commands;
 use App\Domains\Models\Allocators\AllocationManager;
 use App\Domains\Models\Config;
 use App\Domains\Models\Context;
+use App\Domains\Models\DateTask;
 use App\Domains\Models\Project;
 use App\Domains\Models\ProjectManager;
 use App\Domains\Models\ProjectStatusManager;
 use App\Domains\Models\Task;
 use App\Domains\UseCases\StoreMainData;
 use App\Miscs\CsvReader;
+use App\Models\ScheduledTask;
 use App\Models\User;
 use Illuminate\Console\Command;
 
@@ -93,6 +95,25 @@ class AllocatorCommand extends Command
 
         $user = User::first();
         $this->storeMainData->handle($user->id, $config, $projects);
+
+        $projectsHash = \App\Models\Project::get()->pluck('id', 'slug')->all();
+
+        ScheduledTask::query()
+            ->where('user_id', $user->id)
+            ->delete();
+
+        collect($dateTasks)
+            ->map(fn(DateTask $dateTask) => $dateTask->getTasks()
+                ->map(fn(Task $task) => ScheduledTask::insert(
+                    [
+                        'user_id' => $user->id,
+                        'project_id' => $projectsHash[$task->getProject()->getSlug()],
+                        'task_id' => $task->getOrgTask()->getTaskId(),
+                        'the_date' => $dateTask->getDate()->format('Y-m-d'),
+                        'point' => $task->getAllocatedPoint(),
+                    ]
+                ))
+            );
 
         return 0;
     }

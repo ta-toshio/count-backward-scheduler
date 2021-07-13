@@ -17,7 +17,7 @@ class AllocationManager
         $this->context = $context;
     }
 
-    public function handle()
+    public function handle(): array
     {
         $taskStatusManager = TaskStatusManager::createFromTasks(
             iterator_to_array($this->context->getProjectManager()->getTasks()),

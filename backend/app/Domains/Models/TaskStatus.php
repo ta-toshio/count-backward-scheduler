@@ -90,7 +90,9 @@ class TaskStatus
      */
     public function cloneTask(): Task
     {
-        return clone $this->task;
+        $clone = clone $this->task;
+        $clone->setOrgTask($this->task);
+        return $clone;
     }
 
     /**

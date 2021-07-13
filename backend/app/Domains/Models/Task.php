@@ -52,6 +52,10 @@ class Task
      */
     private float $allocatedPoint = 0;
 
+    private ?int $taskId = null;
+
+    private ?Task $orgTask = null;
+
     /**
      * Task constructor.
      * @param  Project  $project
@@ -140,6 +144,22 @@ class Task
     }
 
     /**
+     * @return int|null
+     */
+    public function getTaskId(): ?int
+    {
+        return $this->taskId;
+    }
+
+    /**
+     * @return Task|null
+     */
+    public function getOrgTask(): ?Task
+    {
+        return $this->orgTask;
+    }
+
+    /**
      * @param  CarbonImmutable  $date
      * @return Task
      */
@@ -176,6 +196,22 @@ class Task
     public function isStatic(): bool
     {
         return !empty($this->days);
+    }
+
+    /**
+     * @param  int|null  $taskId
+     */
+    public function setTaskId(?int $taskId): void
+    {
+        $this->taskId = $taskId;
+    }
+
+    /**
+     * @param  Task|null  $orgTask
+     */
+    public function setOrgTask(?Task $orgTask): void
+    {
+        $this->orgTask = $orgTask;
     }
 
 }
