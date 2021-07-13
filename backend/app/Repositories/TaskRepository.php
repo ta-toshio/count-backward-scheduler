@@ -24,6 +24,7 @@ class TaskRepository
                 'project_id' => $projectId,
                 'title' => $task->getTitle(),
                 'point' => $task->getPoint(),
+                'org_point' => $task->getOrgPoint(),
                 'volume' => $task->getVolume(),
                 'days' => implode(',', $task->getDays()),
             ]

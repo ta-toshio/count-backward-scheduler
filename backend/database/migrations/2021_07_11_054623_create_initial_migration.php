@@ -43,7 +43,8 @@ class CreateInitialMigration extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('project_id')->constrained('projects')->cascadeOnDelete();
             $table->string('title')->default('');
-            $table->decimal('point', 9, 3);
+            $table->unsignedInteger('point')->default(0);
+            $table->decimal('org_point', 11, 4)->default(0);
             $table->unsignedInteger('volume')->default(0);
             $table->string('days')->default('');
             $table->timestamps();
@@ -55,7 +56,7 @@ class CreateInitialMigration extends Migration
             $table->foreignId('project_id')->constrained('projects')->cascadeOnDelete();
             $table->foreignId('task_id')->constrained('tasks')->cascadeOnDelete();
             $table->date('the_date');
-            $table->decimal('point', 9, 3);
+            $table->unsignedInteger('point')->default(0);
             $table->decimal('volume', 8, 2)->default(0);
             $table->timestamps();
         });

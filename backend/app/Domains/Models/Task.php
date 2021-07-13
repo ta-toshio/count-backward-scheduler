@@ -55,6 +55,7 @@ class Task
     private ?int $taskId = null;
 
     private ?Task $orgTask = null;
+    private float $orgPoint;
 
     /**
      * Task constructor.
@@ -68,6 +69,7 @@ class Task
         Project $project,
         string $title,
         float $point,
+        float $orgPoint,
         int $volume,
         array $days = []
     ) {
@@ -75,6 +77,7 @@ class Task
         $this->hash = Hash('md5', $title);
         $this->title = $title;
         $this->point = $point;
+        $this->orgPoint = $orgPoint;
         $this->volume = $volume;
         $this->days = $days;
     }
@@ -109,6 +112,14 @@ class Task
     public function getPoint(): float
     {
         return $this->point;
+    }
+
+    /**
+     * @return float
+     */
+    public function getOrgPoint(): float
+    {
+        return $this->orgPoint;
     }
 
     /**

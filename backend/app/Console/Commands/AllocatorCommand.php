@@ -170,6 +170,7 @@ class AllocatorCommand extends Command
                     $project,
                     $row['title'],
                     $row['man-hour'] * Task::ONE_POINT_STANDS_FOR,
+                    $row['man-hour'],
                     is_numeric($row['volume']) ? $row['volume'] : 0,
                     $row['days'] ? explode(',', $row['days']) : [],
                 );
