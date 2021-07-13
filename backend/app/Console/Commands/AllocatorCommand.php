@@ -96,7 +96,7 @@ class AllocatorCommand extends Command
         $user = User::first();
         $this->storeMainData->handle($user->id, $config, $projects);
 
-        $projectsHash = \App\Models\Project::get()->pluck('id', 'slug')->all();
+//        $projectsHash = \App\Models\Project::get()->pluck('id', 'slug')->all();
 
         ScheduledTask::query()
             ->where('user_id', $user->id)
@@ -107,7 +107,7 @@ class AllocatorCommand extends Command
                 ->map(fn(Task $task) => ScheduledTask::insert(
                     [
                         'user_id' => $user->id,
-                        'project_id' => $projectsHash[$task->getProject()->getSlug()],
+                        'project_id' => $task->getProject()->getProjectId(),
                         'task_id' => $task->getOrgTask()->getTaskId(),
                         'the_date' => $dateTask->getDate()->format('Y-m-d'),
                         'point' => $task->getAllocatedPoint(),

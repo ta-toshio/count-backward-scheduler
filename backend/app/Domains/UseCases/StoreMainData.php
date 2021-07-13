@@ -40,6 +40,7 @@ class StoreMainData
 
         foreach ($projects as $project) {
             $projectEloquent = $this->storeProject($userId, $project);
+            $project->setProjectId($projectEloquent->id);
             $project->getTasks()
                 ->each(function (Task $task) use ($userId, $projectEloquent) {
                     $taskEloquentModel = $this->storeTask($userId, $projectEloquent->id, $task);

@@ -44,6 +44,11 @@ class Project
     private array $tasks;
 
     /**
+     * @var int|null
+     */
+    private ?int $projectId = null;
+
+    /**
      * Project constructor.
      * @param  string  $slug
      * @param  string  $title
@@ -156,6 +161,14 @@ class Project
     }
 
     /**
+     * @return int|null
+     */
+    public function getProjectId(): ?int
+    {
+        return $this->projectId;
+    }
+
+    /**
      * @param  array  $tasks
      * @return Project
      */
@@ -163,6 +176,14 @@ class Project
     {
         $this->tasks = $tasks;
         return $this;
+    }
+
+    /**
+     * @param  int|null  $projectId
+     */
+    public function setProjectId(?int $projectId): void
+    {
+        $this->projectId = $projectId;
     }
 
 }
