@@ -4,7 +4,14 @@ volumes:
   psysh-store:
 
 services:
-  app:
+  proxy:
+    build: 
+      context: .
+      dockerfile: ./infra/docker/proxy/Dockerfile
+    ports:
+      - 8140:80 
+
+  api:
     build:
       context: .
       dockerfile: ./infra/docker/php/Dockerfile
@@ -30,15 +37,12 @@ services:
       - DB_USERNAME=${DB_USER:-myuser}
       - DB_PASSWORD=${DB_PASS:-secret}
 
-  web:
+  api-server:
     build:
       context: .
       dockerfile: ./infra/docker/nginx/Dockerfile
     ports:
-      - target: 80
-        published: ${WEB_PORT:-8140}
-        protocol: tcp
-        mode: host
+      - 8080
     volumes:
       - type: volume
         source: php-fpm-socket
@@ -54,10 +58,7 @@ services:
       context: .
       dockerfile: ./infra/docker/mysql/Dockerfile
     ports:
-      - target: 3306
-        published: ${DB_PORT:-8141}
-        protocol: tcp
-        mode: host
+      - ${DB_PORT:-8141}:3306
     volumes:
       - type: bind
         source: ./var/mysql
@@ -67,3 +68,19 @@ services:
       - MYSQL_USER=${DB_USER:-myuser}
       - MYSQL_PASSWORD=${DB_PASS:-secret}
       - MYSQL_ROOT_PASSWORD=${DB_PASS:-secret}
+
+  client:
+    build:
+      context: .
+      dockerfile: ./infra/docker/nextjs/Dockerfile
+      args:
+        NODE_ENV: development
+    ports:
+      - 3000
+    volumes:
+      - type: bind
+        source: ./frontend
+        target: /work/frontend
+    environment:
+      - NODE_ENV=development
+    tty: true
