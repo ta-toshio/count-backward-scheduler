@@ -1,6 +1,7 @@
 // import React from 'react'
 // import {render, fireEvent} from '../testUtils'
 
+// @ts-ignore
 describe('Sample Test', () => {
     it('object assignment', () => {
         const data = {one: 1};
