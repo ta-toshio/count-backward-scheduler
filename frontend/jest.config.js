@@ -1,4 +1,6 @@
 module.exports = {
+  preset: 'ts-jest',
+  setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
   roots: ['<rootDir>'],
   testEnvironment: 'jsdom',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json', 'jsx'],
@@ -14,5 +16,10 @@ module.exports = {
   moduleNameMapper: {
     '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
     '\\.(gif|ttf|eot|svg|png)$': '<rootDir>/test/__mocks__/fileMock.js',
+  },
+  globals: {
+    'ts-jest': {
+      tsconfig: 'tsconfig.test.json',
+    },
   },
 }
