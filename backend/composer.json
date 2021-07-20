@@ -12,7 +12,8 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.40",
         "laravel/tinker": "^2.5",
-        "league/csv": "^9.7"
+        "league/csv": "^9.7",
+        "nuwave/lighthouse": "^5.15"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",
