@@ -32,6 +32,10 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
           <a>Users List With Apollo</a>
         </Link>{' '}
         |{' '}
+        <Link href="/use-redux">
+          <a>Clock</a>
+        </Link>{' '}
+        |{' '}
         <Link href="/users">
           <a>Users List</a>
         </Link>{' '}

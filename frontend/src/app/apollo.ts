@@ -9,17 +9,19 @@ function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     link: new HttpLink({
-      uri:
-        typeof window === 'undefined'
-          ? 'http://api-server:8080/graphql'
-          : 'http://api.scheduler.me:8140/graphql', // Server URL (must be absolute)
+      uri: 'http://api.scheduler.me:8140/graphql', // Server URL (must be absolute)
+      // apply below if it is dispatching in docker
+      // uri:
+      //   typeof window === 'undefined'
+      //     ? 'http://api-server:8080/graphql'
+      //     : 'http://api.scheduler.me:8140/graphql', // Server URL (must be absolute)
       credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
     }),
     cache: new InMemoryCache(),
   })
 }
 
-export function initializeApollo(initialState = null) {
+export const initializeApollo = (initialState = null) => {
   const _apolloClient = apolloClient ?? createApolloClient()
 
   // If your page has Next.js data fetching methods that use Apollo Client, the initial state
@@ -50,7 +52,6 @@ export function initializeApollo(initialState = null) {
   return _apolloClient
 }
 
-export function useApollo(initialState) {
-  const store = useMemo(() => initializeApollo(initialState), [initialState])
-  return store
+export const useApollo = (initialState) => {
+  return useMemo(() => initializeApollo(initialState), [initialState])
 }
