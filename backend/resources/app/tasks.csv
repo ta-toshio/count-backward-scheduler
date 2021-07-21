@@ -1,4 +1,4 @@
-category,class_1,class_2,title,description,priority,man-hour,man-hours,volume,uuid,parent,done,exclude,days
+category,class_1,class_2,title,description,priority,man-hour,man-hours,volume,uuid,parent,done,exclude,days,start_date,end_date
 search-brand,base,,jQuantsチュートリアル,https://japanexchangegroup.github.io/J-Quants-Tutorial,20,5,#REF!,8,80a55c6a-3374-4e3d-83dc-054441598dff,,,,
 search-brand,base,,テクニカル分析の理解を深めて利用目的を知る,,20,-,#REF!,1,Loading...,,,,
 search-brand,base,,テクニカル分析の理解で銘柄を絞る手段を選定する,,20,-,#REF!,1,Loading...,,,,
@@ -158,9 +158,9 @@ video,go,,Go: The Complete Developer's Guide (Golang),,1,1.25,#REF!,8,Loading...
 video,gcp,,Google Cloud Platform (GCP) Fundamentals for Beginners,,1,0.5,#REF!,13,Loading...,,,,
 video,gcp,,GCP - Google Cloud Platform Concepts,,1,1,#REF!,9,Loading...,,,,
 video,flutter,,The Complete 2021 Flutter Development Bootcamp with Dart,,1,4,#REF!,18,Loading...,,,,
-misc,english,,英語,,20,0.0625,#REF!,,643a7a28-ec7e-4dc2-ae91-ad83774ad7ed,,,,"0,1,2,3,4,5"
-misc,program,laravel,laracasts,,15,0.0625,#REF!,,23b27ffc-7e23-47c4-b65c-ee03c87b5d63,,,,"0,1,2,3,4,5"
-video,program,laravel,laracasts,,15,0.0625,#REF!,,23b27ffc-7e23-47c4-b65c-ee03c87b5d62,,,,"2"
+misc,english,,英語,,20,0.0625,#REF!,,643a7a28-ec7e-4dc2-ae91-ad83774ad7ed,,,,"0,1,2,3,4,5","2021-07-01",""
+misc,program,laravel,static task 1,,15,0.0625,#REF!,,23b27ffc-7e23-47c4-b65c-ee03c87b5d63,,,,"0,1,2,3,4,5","2021-10-01","2021-12-10"
+video,program,laravel,static task 2,,15,0.0625,#REF!,,23b27ffc-7e23-47c4-b65c-ee03c87b5d62,,,,"2","","2022-02-01"
 test,test_class1,test_class2,test task1,,15,0.5,#REF!,,,,,,
 test,test_class1,test_class2,test task2,,15,0.5,#REF!,,,,,,
 test,test_class1,test_class2,test task3,,15,0.5,#REF!,,,,,,

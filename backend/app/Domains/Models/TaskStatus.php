@@ -11,14 +11,11 @@ class TaskStatus
 
     private Task $task;
     private string $projectSlug;
-    private string $title;
     private string $hash;
     private float $point;
     private float $compressPoint;
     private float $allocatedCompressPoint = 0;
     private float $compressCoef = 1;
-    private int $volume;
-    private array $days;
     private bool $isAssigned = false;
     private float $stretchPoint;
 
@@ -30,19 +27,14 @@ class TaskStatus
         float $compressPoint,
         float $stretchPoint,
         float $compressCoef,
-        int $volume,
-        array $days = []
     ) {
         $this->task = $task;
         $this->projectSlug = $projectSlug;
-        $this->title = $title;
-        $this->hash = Hash('md5', $title);
+        $this->hash = Hash('md5', $projectSlug .  $title);
         $this->point = $point;
         $this->compressPoint = $compressPoint;
         $this->stretchPoint = $stretchPoint;
         $this->compressCoef = $compressCoef;
-        $this->volume = $volume;
-        $this->days = $days;
     }
 
     /**
@@ -104,14 +96,6 @@ class TaskStatus
     }
 
     /**
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    /**
      * @return false|string
      */
     public function getHash(): bool|string
@@ -157,22 +141,6 @@ class TaskStatus
     public function getCompressCoef(): float
     {
         return $this->compressCoef;
-    }
-
-    /**
-     * @return int
-     */
-    public function getVolume(): int
-    {
-        return $this->volume;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDays(): array
-    {
-        return $this->days;
     }
 
     /**

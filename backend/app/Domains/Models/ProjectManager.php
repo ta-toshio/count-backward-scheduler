@@ -4,6 +4,7 @@
 namespace App\Domains\Models;
 
 
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 
 class ProjectManager
@@ -77,6 +78,29 @@ class ProjectManager
                     }
                     return $tasks;
                 }, []);
+    }
+
+    public function getStaticTasksWithin(CarbonImmutable $theDate)
+    {
+        return collect($this->getStaticTasks())
+            ->filter(
+                fn(Task $staticTask) => in_array($theDate->dayOfWeek, $staticTask->getDays())
+            )
+            ->filter(function (Task $staticTask) use ($theDate) {
+                $startDate = $staticTask->getStartDate();
+                $endDate = $staticTask->getEndDate();
+
+                if ($startDate && $endDate) {
+                    return $theDate->between($startDate, $endDate);
+                }
+                if ($startDate) {
+                    return $theDate->gte($startDate);
+                }
+                if ($endDate) {
+                    return $theDate->lte($endDate);
+                }
+                return true;
+            });
     }
 
     /**

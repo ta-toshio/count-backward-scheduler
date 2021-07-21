@@ -21,6 +21,7 @@ class ProjectRepository
                 'start_date' => $project->getStartDate(),
                 'end_date' => $project->getEndDate(),
                 'ratio' => $project->getAllocationRatio(),
+                'coef' => $project->getCoef(),
                 'color' => $project->getColor(),
             ]
         );

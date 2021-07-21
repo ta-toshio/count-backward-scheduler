@@ -34,10 +34,17 @@ class Project
      * @var float
      */
     private float $allocationRatio;
+
+    /**
+     * @var float
+     */
+    private float $coef = 0;
+
     /**
      * @var string
      */
     private string $color;
+
     /**
      * @var Task[]
      */
@@ -145,6 +152,14 @@ class Project
     }
 
     /**
+     * @return float
+     */
+    public function getCoef(): float|int
+    {
+        return $this->coef;
+    }
+
+    /**
      * @return string
      */
     public function getColor(): string
@@ -169,10 +184,20 @@ class Project
     }
 
     /**
+     * @param  float  $coef
+     * @return $this
+     */
+    public function setCoef(float $coef): static
+    {
+        $this->coef = $coef;
+        return $this;
+    }
+
+    /**
      * @param  array  $tasks
      * @return Project
      */
-    public function setTasks(array $tasks): Project
+    public function setTasks(array $tasks): static
     {
         $this->tasks = $tasks;
         return $this;

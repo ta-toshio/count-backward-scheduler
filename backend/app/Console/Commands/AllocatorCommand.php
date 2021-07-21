@@ -69,7 +69,7 @@ class AllocatorCommand extends Command
 
         $config = new Config(
             $start,
-            8 * 1000,
+            Task::ONE_POINT_STANDS_FOR,
             2,
             [0, 6],
             1,
@@ -173,6 +173,8 @@ class AllocatorCommand extends Command
                     $row['man-hour'],
                     is_numeric($row['volume']) ? $row['volume'] : 0,
                     $row['days'] ? explode(',', $row['days']) : [],
+                    $row['start_date'],
+                    $row['end_date'],
                 );
                 if (!$task) {
                     continue;

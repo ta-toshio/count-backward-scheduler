@@ -10,6 +10,7 @@ use App\Domains\Models\SprintProjectStatus;
 use App\Domains\Models\SprintProjectStatusManager;
 use App\Domains\Models\TaskStatus;
 use App\Domains\Models\TaskStatusManager;
+use Illuminate\Support\Collection;
 
 class SeriesAllocator implements AllocatorInterface
 {
@@ -56,6 +57,7 @@ class SeriesAllocator implements AllocatorInterface
                     $dateStatus->getLimitPoint()
                 );
                 $this->assign($dateTask, $sprintProjectStatusManager);
+                $this->assignStaticTask($dateTask);
 
                 if ($theDate->gte($endDate)) {
                     break;
@@ -169,6 +171,21 @@ class SeriesAllocator implements AllocatorInterface
         }
     }
 
+    private function assignStaticTask(DateTask $dateTask)
+    {
+        $this->taskStatusManager->getStaticTasksWithin($dateTask->getDate())
+            ->each(function (TaskStatus $taskStatus) use ($dateTask) {
+                $pointToBeConsumed = $taskStatus->getLeftCompressPoint();
+
+                $task = $taskStatus
+                    ->cloneTask()
+                    ->setDate($dateTask->getDate());
+                $dateTask
+                    ->addAllocatedPoint($pointToBeConsumed)
+                    ->addTask($task);
+            });
+    }
+
     /**
      * @param  SprintProjectStatusManager  $sprintProjectStatusManager
      * @return TaskStatus|null
@@ -186,10 +203,6 @@ class SeriesAllocator implements AllocatorInterface
             }
         }
         return null;
-    }
-
-    private function getNextProject()
-    {
     }
 
     public function support(string $identifier): bool

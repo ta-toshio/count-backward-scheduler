@@ -5,6 +5,7 @@ namespace App\Domains\Models;
 
 
 use App\Miscs\Calculator;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 
 class TaskStatusManager
@@ -37,9 +38,7 @@ class TaskStatusManager
                     $task->getPoint(),
                     $compressPoint,
                     $stretchPoint,
-                    $projectStatus->getCompressCoef(),
-                    $task->getVolume(),
-                    $task->getDays()
+                    $projectStatus->getCompressCoef()
                 )
             );
         }
@@ -53,20 +52,42 @@ class TaskStatusManager
             ->filter(fn(TaskStatus $taskStatus) =>
                 $taskStatus->getProjectSlug() === $projectSlug
                 && !$taskStatus->isAssigned()
-                && empty($taskStatus->getDays())
+                && empty($taskStatus->getTask()->getDays())
             );
     }
 
-    /**
-     * @param  string  $projectSlug
-     * @return TaskStatus|null
-     */
-    public function findFirstFreeTask(string $projectSlug): ?TaskStatus
+    public function getStaticTasks(): Collection
     {
         return $this->getTasks()
-            ->filter(fn(TaskStatus $taskStatus) =>
-                $taskStatus->getProjectSlug() === $projectSlug && !$taskStatus->isAssigned())
-            ->first();
+            ->filter(fn(TaskStatus $taskStatus) => $taskStatus->getTask()->isStatic());
+    }
+
+    /**
+     * @param  CarbonImmutable  $theDate
+     * @return Collection
+     */
+    public function getStaticTasksWithin(CarbonImmutable $theDate): Collection
+    {
+        return $this->getStaticTasks()
+            ->filter(
+                fn(TaskStatus $taskStatus) =>
+                in_array($theDate->dayOfWeek, $taskStatus->getTask()->getDays())
+            )
+            ->filter(function (TaskStatus $taskStatus) use ($theDate) {
+                $startDate = $taskStatus->getTask()->getStartDate();
+                $endDate = $taskStatus->getTask()->getEndDate();
+
+                if ($startDate && $endDate) {
+                    return $theDate->between($startDate, $endDate);
+                }
+                if ($startDate) {
+                    return $theDate->gte($startDate);
+                }
+                if ($endDate) {
+                    return $theDate->lte($endDate);
+                }
+                return true;
+            });
     }
 
     /**

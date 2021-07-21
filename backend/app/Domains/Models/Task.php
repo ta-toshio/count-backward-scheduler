@@ -42,6 +42,9 @@ class Task
      */
     private array $days;
 
+    private ?CarbonImmutable $startDate;
+    private ?CarbonImmutable $endDate;
+
     /**
      * @var ?CarbonImmutable
      */
@@ -55,23 +58,18 @@ class Task
     private ?int $taskId = null;
 
     private ?Task $orgTask = null;
+
     private float $orgPoint;
 
-    /**
-     * Task constructor.
-     * @param  Project  $project
-     * @param  string  $title
-     * @param  float  $point
-     * @param  int  $volume
-     * @param  array  $days
-     */
     public function __construct(
         Project $project,
         string $title,
         float $point,
         float $orgPoint,
         int $volume,
-        array $days = []
+        array $days,
+        string $startDate,
+        string $endDate
     ) {
         $this->project = $project;
         $this->hash = Hash('md5', $title);
@@ -80,6 +78,12 @@ class Task
         $this->orgPoint = $orgPoint;
         $this->volume = $volume;
         $this->days = $days;
+        $this->startDate = $startDate instanceof CarbonImmutable
+            ? $startDate
+            : ($startDate ? CarbonImmutable::parse($startDate) : null);
+        $this->endDate = $endDate instanceof CarbonImmutable
+            ? $endDate
+            : ($endDate ? CarbonImmutable::parse($endDate) : null);
     }
 
     /**
@@ -141,6 +145,22 @@ class Task
     /**
      * @return CarbonImmutable|null
      */
+    public function getStartDate(): ?CarbonImmutable
+    {
+        return $this->startDate;
+    }
+
+    /**
+     * @return CarbonImmutable|null
+     */
+    public function getEndDate(): ?CarbonImmutable
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * @return CarbonImmutable|null
+     */
     public function getDate(): ?CarbonImmutable
     {
         return $this->date;
@@ -187,17 +207,6 @@ class Task
     public function setAllocatedPoint(float|int $allocatedPoint): static
     {
         $this->allocatedPoint = $allocatedPoint;
-        return $this;
-    }
-
-    /**
-     * @param  float  $point
-     * @return $this
-     */
-    public function addAllocationPoint(float $point): static
-    {
-        $this->allocatedPoint = round(Calculator::floatAdd($this->allocatedPoint, $point), 3);
-
         return $this;
     }
 

@@ -49,17 +49,17 @@ class StoreMainData
         }
     }
 
-    public function storeConfig(int $userId, Config $config)
+    public function storeConfig(int $userId, Config $config): \Illuminate\Database\Eloquent\Model|\App\Models\Config
     {
         return $this->configRepository->upsert($userId, $config);
     }
 
-    public function storeProject(int $userId, Project $project)
+    public function storeProject(int $userId, Project $project): \Illuminate\Database\Eloquent\Model|\App\Models\Project
     {
         return $this->projectRepository->upsert($userId, $project);
     }
 
-    public function storeTask(int $userId, int $projectId, Task $task)
+    public function storeTask(int $userId, int $projectId, Task $task): \Illuminate\Database\Eloquent\Model|\App\Models\Task
     {
         return $this->taskRepository->upsert($userId, $projectId, $task);
     }

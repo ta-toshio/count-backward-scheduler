@@ -90,6 +90,14 @@ class Context
             }
         }
 
+        // set coef
+        $this->projectStatusManager
+            ->getProjectStatuses()
+            ->each(function (ProjectStatus $projectStatus) {
+                $project = $this->projectManager->getProject($projectStatus->getSlug());
+                $project->setCoef($projectStatus->getCompressCoef());
+            });
+
         $this->groupBySprint();
     }
 
@@ -102,10 +110,7 @@ class Context
         // 稼働可能工数でタスクを割り当てしていく
 
         // 指定された日の固定タスクを取得
-        $staticTasks = collect($this->projectManager->getStaticTasks())
-            ->filter(
-                fn(Task $staticTask) => in_array($theDate->dayOfWeek, $staticTask->getDays())
-            );
+        $staticTasks = $this->projectManager->getStaticTasksWithin($theDate);
 
         // 固定タスクの工数合計
         $staticTaskTotalPoint = $staticTasks->reduce(
