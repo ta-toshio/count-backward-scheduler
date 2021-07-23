@@ -3,6 +3,10 @@ volumes:
   php-fpm-socket:
   psysh-store:
 
+networks:
+  backend:
+  frontend:
+
 services:
   proxy:
     build: 
@@ -10,6 +14,12 @@ services:
       dockerfile: ./infra/docker/proxy/Dockerfile
     ports:
       - 8140:80 
+    depends_on:
+      - api-server
+      - client
+    networks:
+      - backend
+      - frontend
 
   api:
     build:
@@ -36,6 +46,8 @@ services:
       - DB_DATABASE=${DB_NAME:-mydatabase}
       - DB_USERNAME=${DB_USER:-myuser}
       - DB_PASSWORD=${DB_PASS:-secret}
+    networks:
+      - backend
 
   api-server:
     build:
@@ -52,6 +64,9 @@ services:
       - type: bind
         source: ./backend
         target: /work/backend
+    networks:
+      - backend
+      - frontend
 
   db:
     build:
@@ -68,6 +83,8 @@ services:
       - MYSQL_USER=${DB_USER:-myuser}
       - MYSQL_PASSWORD=${DB_PASS:-secret}
       - MYSQL_ROOT_PASSWORD=${DB_PASS:-secret}
+    networks:
+      - backend
 
   client:
     build:
@@ -83,4 +100,10 @@ services:
         target: /work/frontend
     environment:
       - NODE_ENV=development
+    depends_on:
+      - api-server
+      - api
+    networks:
+      - backend
+      - frontend
     tty: true
