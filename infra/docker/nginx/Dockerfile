@@ -10,3 +10,5 @@ RUN apk update && \
 COPY ./infra/docker/nginx/*.conf /etc/nginx/conf.d/
 
 WORKDIR /work/backend
+
+EXPOSE 8080
