@@ -129,3 +129,7 @@ ide-helper:
 	docker compose exec app php artisan ide-helper:generate
 	docker compose exec app php artisan ide-helper:meta
 	docker compose exec app php artisan ide-helper:models --nowrite
+copy-env-localhost:
+	cp backend/.env.localhost backend/.env
+copy-env-dev:
+	cp backend/.env.dev backend/.env
