@@ -20,7 +20,7 @@ const LoggedInPage: NextPage = () => {
   }, [])
   return (
     <Layout>
-      <div>{user.email || ''}</div>
+      <div>{(user && user.email) || ''}</div>
       <div>
         <button
           onClick={() => {

@@ -9,12 +9,12 @@ function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     link: new HttpLink({
-      uri: 'http://api.scheduler.me:8140/graphql', // Server URL (must be absolute)
+      // uri: 'http://api.scheduler.me:8140/graphql', // Server URL (must be absolute)
       // apply below if it is dispatching in docker
-      // uri:
-      //   typeof window === 'undefined'
-      //     ? 'http://api-server:8080/graphql'
-      //     : 'http://api.scheduler.me:8140/graphql', // Server URL (must be absolute)
+      uri:
+        typeof window === 'undefined'
+          ? 'http://api-server:8080/graphql'
+          : 'http://api.scheduler.me:8140/graphql', // Server URL (must be absolute)
       credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
     }),
     cache: new InMemoryCache(),
