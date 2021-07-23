@@ -26,12 +26,15 @@ RUN adduser -S nextjs -u 1001
 
 # You only need to copy next.config.js if you are NOT using the default configuration
 # COPY --from=builder /work/frontend/next.config.js ./
-COPY --from=builder /work/frontend/public ./public
-COPY --from=builder --chown=nextjs:nodejs /work/frontend/.next ./.next
-COPY --from=builder /work/frontend/node_modules ./node_modules
-COPY --from=builder /work/frontend/package.json ./package.json
+# COPY --from=builder /work/frontend/public ./public
+# COPY --from=builder --chown=nextjs:nodejs /work/frontend/.next ./.next
+# COPY --from=builder /work/frontend/node_modules ./node_modules
+# COPY --from=builder /work/frontend/package.json ./package.json
+COPY ./frontend/ .
+COPY --from=deps /work/frontend/node_modules ./node_modules
 
 USER nextjs
+
 
 EXPOSE 3000
 
@@ -41,3 +44,5 @@ EXPOSE 3000
 # ENV NEXT_TELEMETRY_DISABLED 1
 
 # CMD ["yarn", "start"]
+CMD sh -c "yarn run build && /bin/sh"
+# CMD sh -c "yarn run build && yarn run start && /bin/sh"
