@@ -6,12 +6,12 @@ WORKDIR /work/frontend
 COPY ./frontend/package.json ./frontend/yarn.lock ./
 RUN yarn install --frozen-lockfile
 
-# Rebuild the source code only when needed
-FROM node:14-alpine AS builder
-WORKDIR /work/frontend
-COPY ./frontend/ .
-COPY --from=deps /work/frontend/node_modules ./node_modules
-RUN yarn build
+# # Rebuild the source code only when needed
+# FROM node:14-alpine AS builder
+# WORKDIR /work/frontend
+# COPY ./frontend/ .
+# COPY --from=deps /work/frontend/node_modules ./node_modules
+# RUN yarn build
 
 # Production image, copy all the files and run next
 FROM node:14-alpine AS runner
@@ -19,19 +19,23 @@ WORKDIR /work/frontend
 
 ARG NODE_ENV ${NODE_ENV:-production}
 ENV NODE_ENV $NODE_ENV
-RUN echo $NODE_ENV
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
 
-# You only need to copy next.config.js if you are NOT using the default configuration
+# # You only need to copy next.config.js if you are NOT using the default configuration
 # COPY --from=builder /work/frontend/next.config.js ./
 # COPY --from=builder /work/frontend/public ./public
 # COPY --from=builder --chown=nextjs:nodejs /work/frontend/.next ./.next
 # COPY --from=builder /work/frontend/node_modules ./node_modules
 # COPY --from=builder /work/frontend/package.json ./package.json
+
 COPY ./frontend/ .
 COPY --from=deps /work/frontend/node_modules ./node_modules
+
+RUN chown -R nextjs.nodejs .
+
+RUN apk --no-cache add curl
 
 USER nextjs
 
