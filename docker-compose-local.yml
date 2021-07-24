@@ -1,0 +1,84 @@
+version: "3.9"
+volumes:
+  php-fpm-socket:
+  psysh-store:
+
+services:
+  api-server:
+    build:
+      context: .
+      dockerfile: ./infra/docker/nginx/Dockerfile
+    ports:
+      - 8142:8080
+    volumes:
+      - type: volume
+        source: php-fpm-socket
+        target: /var/run/php-fpm
+        volume:
+          nocopy: true
+      - type: bind
+        source: ./backend
+        target: /work/backend
+
+  api:
+    build:
+      context: .
+      dockerfile: ./infra/docker/php/Dockerfile
+    volumes:
+      - type: volume
+        source: php-fpm-socket
+        target: /var/run/php-fpm
+        volume:
+          nocopy: true
+      - type: bind
+        source: ./backend
+        target: /work/backend
+      - type: volume
+        source: psysh-store
+        target: /root/.config/psysh
+        volume:
+          nocopy: true
+    environment:
+      - APP_HOST=localhost
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=mydatabase
+      - DB_USERNAME=myuser
+      - DB_PASSWORD=secret
+
+#   client:
+#     build:
+#       context: .
+#       dockerfile: ./infra/docker/nextjs/Dockerfile
+#       args:
+#         NODE_ENV: development
+#     ports:
+#       - 8140:3000
+#     volumes:
+#       - type: bind
+#         source: ./frontend
+#         target: /work/frontend
+#     environment:
+#       - NODE_ENV=development
+#       - APP_HOST=schedule.me
+#     depends_on:
+#       - api-server
+#       - api
+#     tty: true
+
+  db:
+    build:
+      context: .
+      dockerfile: ./infra/docker/mysql/Dockerfile
+    ports:
+      - 8141:3306
+    volumes:
+      - type: bind
+        source: ./var/mysql
+        target: /var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=mydatabase
+      - MYSQL_USER=myuser
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=secret

@@ -6,15 +6,15 @@ import isEqual from 'lodash/isEqual'
 let apolloClient
 
 function createApolloClient() {
+  const isServer = typeof window === 'undefined'
   return new ApolloClient({
-    ssrMode: typeof window === 'undefined',
+    ssrMode: isServer,
     link: new HttpLink({
-      // uri: 'http://api.scheduler.me:8140/graphql', // Server URL (must be absolute)
-      // apply below if it is dispatching in docker
-      uri:
-        typeof window === 'undefined'
-          ? 'http://api-server:8080/graphql'
-          : 'http://api.scheduler.me:8140/graphql', // Server URL (must be absolute)
+      uri: (() => {
+        return isServer
+          ? process.env.API_SERVER_URI_FROM_SERVER + '/graphql'
+          : process.env.API_SERVER_URI_FROM_BROWSER + '/graphql'
+      })(),
       credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
     }),
     cache: new InMemoryCache(),

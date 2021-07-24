@@ -40,16 +40,14 @@ const LoggedInPage: NextPage = () => {
       <div>
         <button
           onClick={() => {
-            httpClient.get('/sanctum/csrf-cookie').then((_) => {
-              httpClient
-                .post('/logout')
-                .then((_) => {
-                  router.push('/')
-                })
-                .catch((e) => {
-                  console.error(e)
-                })
-            })
+            httpClient
+              .post('/logout')
+              .then((_) => {
+                router.push('/')
+              })
+              .catch((e) => {
+                console.error(e)
+              })
           }}
         >
           Logout
