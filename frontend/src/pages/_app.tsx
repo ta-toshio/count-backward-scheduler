@@ -5,6 +5,8 @@ import type { AppProps } from 'next/app'
 import { useStore } from '../app/store'
 import { useApollo } from '../app/apollo'
 
+import '../styles/global.scss'
+
 function MyApp({ Component, pageProps }: AppProps) {
   const store = useStore(pageProps.initialReduxState)
   const apolloClient = useApollo(pageProps.initialApolloState)
