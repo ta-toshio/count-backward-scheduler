@@ -1,10 +1,13 @@
 import Layout from '../components/Layout'
 import { useAppDispatch, useInterval } from '../app/hooks'
-import { initializeStore } from '../app/store'
 import Clock from '../features/clock/Clock'
 import { tick } from '../features/clock/clockSlice'
+import { wrapper } from '../app/store'
+import { useStore } from 'react-redux'
 
 function ReduxPage() {
+  // eslint-disable-next-line no-console
+  console.log('State on render', useStore().getState())
   // Tick the time every second
   const dispatch = useAppDispatch()
 
@@ -19,18 +22,11 @@ function ReduxPage() {
   )
 }
 
-export async function getStaticProps() {
-  const reduxStore = initializeStore()
-  const { dispatch } = reduxStore
-
-  dispatch(tick(Date.now()))
-
+export const getStaticProps = wrapper.getStaticProps((store) => () => {
+  store.dispatch(tick(Date.now()))
   return {
-    props: {
-      initialReduxState: reduxStore.getState(),
-    },
-    revalidate: 1,
+    props: {},
   }
-}
+})
 
 export default ReduxPage

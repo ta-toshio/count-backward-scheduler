@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { HYDRATE } from '../../app/nextRedux'
 
 export interface ClockState {
   lastUpdate: number
@@ -17,6 +18,14 @@ export const clockSlice = createSlice({
     tick: (state, action: PayloadAction<number>) => {
       state.lastUpdate = action.payload
       state.light = !!state.light
+    },
+  },
+  extraReducers: {
+    [HYDRATE]: (state, action) => {
+      return {
+        ...state,
+        ...action.payload.clock,
+      }
     },
   },
 })
