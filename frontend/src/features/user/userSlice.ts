@@ -30,9 +30,9 @@ export const postLoginAction = createAsyncThunk(
 
 export const getUserAction = createAsyncThunk(
   'user/get-user',
-  async (_, { rejectWithValue }) => {
+  async (params: { getParam?: {} } | void, { rejectWithValue }) => {
     try {
-      return await getUser()
+      return await getUser(params && params.getParam)
     } catch (e) {
       return rejectWithValue(e.response.data)
     }
@@ -58,9 +58,9 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(HYDRATE, (state, action) => {
-        // console.log(action)
-        // state.user = action
+      .addCase(HYDRATE, (state, action: any) => {
+        state = action.payload.user
+        return state
       })
       .addCase(postLoginAction.pending, (state) => {
         state.loginLoading = true
@@ -71,6 +71,7 @@ export const userSlice = createSlice({
         state.loginLoading = false
         state.loginLoaded = true
         state.loginError = ''
+        state.isAuthenticated = true
         state.user = action.payload
       })
       .addCase(
@@ -79,6 +80,7 @@ export const userSlice = createSlice({
           state.loginLoading = false
           state.loginLoaded = true
           state.loginError = action.payload.message
+          state.isAuthenticated = false
           state.user = null
         }
       )
@@ -91,12 +93,14 @@ export const userSlice = createSlice({
         state.getUserLoading = false
         state.getUserLoaded = true
         state.getUserError = ''
+        state.isAuthenticated = true
         state.user = action.payload
       })
       .addCase(getUserAction.rejected, (state, action: PayloadAction<any>) => {
         state.getUserLoading = false
         state.getUserLoaded = true
         state.getUserError = action.payload.message
+        state.isAuthenticated = false
         state.user = null
       })
   },
@@ -108,9 +112,6 @@ export const {
   logout: logoutAction,
 } = userSlice.actions
 
-export const selectUser = (state: AppState) => [
-  state.user.user,
-  state.user.isAuthenticated,
-]
+export const selectRootUser = (state: AppState) => state.user
 
 export default userSlice.reducer

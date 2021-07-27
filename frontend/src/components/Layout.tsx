@@ -30,9 +30,6 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
 
       <div className="navbar-menu">
         <div className="navbar-end">
-          <Link href="/">
-            <a className="navbar-item">WHY?</a>
-          </Link>
           <Link href="/login">
             <a className="navbar-item">Login</a>
           </Link>
@@ -50,6 +47,9 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
           </Link>
           <Link href="/use-redux">
             <a className="navbar-item">Redux</a>
+          </Link>
+          <Link href="/user">
+            <a className="navbar-item">User</a>
           </Link>
           <Link href="/uses">
             <a className="navbar-item">Users</a>

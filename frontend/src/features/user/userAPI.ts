@@ -8,7 +8,9 @@ export const postLogin = async (credential: postLoginActionInput) => {
   return response.data
 }
 
-export const getUser = async () => {
-  const response = await httpClient.get('/api/user')
+export const getUser = async (params) => {
+  const response = await httpClient.get('/api/user', {
+    headers: params?.headers ? params.headers : {},
+  })
   return response.data
 }
