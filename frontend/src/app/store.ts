@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 
 import counterReducer from '../features/counter/counterSlice'
 import clockReducer from '../features/clock/clockSlice'
+import userReducer from '../features/user/userSlice'
 import { createWrapper } from './nextRedux'
 
 export const makeStore = () => {
@@ -9,6 +10,7 @@ export const makeStore = () => {
     reducer: {
       counter: counterReducer,
       clock: clockReducer,
+      user: userReducer,
     },
   })
 }

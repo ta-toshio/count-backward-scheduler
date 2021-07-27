@@ -5,8 +5,11 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 import Layout from '../components/Layout'
-import httpClient from '../app/httpClient'
 import Yup from '../app/yup'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
+import { postLoginAction } from '../features/user/userSlice'
+import { AppState } from '../app/store'
+import classNames from 'classnames'
 
 const schema = Yup.object().shape({
   email: Yup.string().required().email(),
@@ -15,6 +18,11 @@ const schema = Yup.object().shape({
 
 const Login: NextPage = () => {
   const router = useRouter()
+  const dispatch = useAppDispatch()
+  const { loginLoading, loginError } = useAppSelector(
+    (state: AppState) => state.user
+  )
+
   const {
     register,
     handleSubmit,
@@ -26,22 +34,15 @@ const Login: NextPage = () => {
   /**
    * Submit the form.
    */
-  const submit = (data): Promise<void> => {
-    // Make API call if everything is fine.
-    // props.login(email, password);
-    return httpClient.get('/sanctum/csrf-cookie').then((_) => {
-      // Login...
-      httpClient
-        .post('/login', {
-          email: data.email,
-          password: data.password,
-        })
-        .then((_) => {
-          router.push('/')
-        })
-        .catch((e) => {
-          console.error(e)
-        })
+  const submit = (data) => {
+    const postData = {
+      email: data.email,
+      password: data.password,
+    }
+    dispatch(postLoginAction(postData)).then((data) => {
+      if (data.payload && data.payload.id) {
+        router.push('/')
+      }
     })
   }
 
@@ -53,12 +54,13 @@ const Login: NextPage = () => {
             <div className="column is-4 is-offset-4">
               <h3 className="title has-text-black">Login</h3>
               <hr className="login-hr" />
+              {loginError && <p>{loginError}</p>}
               <div className="box">
                 <form onSubmit={handleSubmit(submit)}>
                   <div className="field">
                     <div className="control">
                       <input
-                        {...register('email', { required: true })}
+                        {...register('email')}
                         type="text"
                         className="input"
                         placeholder="Your email address..."
@@ -71,7 +73,7 @@ const Login: NextPage = () => {
                   <div className="field">
                     <div className="control">
                       <input
-                        {...register('password', { required: true })}
+                        {...register('password')}
                         type="password"
                         className="input"
                         placeholder="Your password..."
@@ -81,10 +83,18 @@ const Login: NextPage = () => {
                   </div>
                   <div className="field">
                     <label className="checkbox">
-                      <input type="checkbox" /> Remember me
+                      <input {...register('remember')} type="checkbox" />{' '}
+                      Remember me
                     </label>
                   </div>
-                  <button className="button is-block is-info is-large is-fullwidth">
+                  <button
+                    className={classNames(
+                      {
+                        'is-loading': loginLoading,
+                      },
+                      'button is-block is-info is-large is-fullwidth'
+                    )}
+                  >
                     Login
                     <i className="fa fa-sign-in" />
                   </button>

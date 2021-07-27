@@ -7,7 +7,7 @@ const httpClient = axios.create({
       : process.env.API_SERVER_URI_FROM_BROWSER,
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
+    // 'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
   },
 })
