@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppState } from '../../app/store'
-import { postLogin as postLoginApi } from './userAPI'
+import { getUser, postLogin as postLoginApi } from './userAPI'
+import { HYDRATE } from '../../app/nextRedux'
 
 export const initialState = {
   isAuthenticated: false,
@@ -8,6 +9,9 @@ export const initialState = {
   loginLoading: false,
   loginLoaded: false,
   loginError: '',
+  getUserLoading: false,
+  getUserLoaded: false,
+  getUserError: '',
 }
 
 export type postLoginActionInput = { email: string; password: string }
@@ -18,6 +22,17 @@ export const postLoginAction = createAsyncThunk(
     // The value we return becomes the `fulfilled` action payload
     try {
       return await postLoginApi(credential)
+    } catch (e) {
+      return rejectWithValue(e.response.data)
+    }
+  }
+)
+
+export const getUserAction = createAsyncThunk(
+  'user/get-user',
+  async (_, { rejectWithValue }) => {
+    try {
+      return await getUser()
     } catch (e) {
       return rejectWithValue(e.response.data)
     }
@@ -43,11 +58,14 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(HYDRATE, (state, action) => {
+        // console.log(action)
+        // state.user = action
+      })
       .addCase(postLoginAction.pending, (state) => {
         state.loginLoading = true
         state.loginLoaded = false
         state.loginError = ''
-        return state
       })
       .addCase(postLoginAction.fulfilled, (state, action) => {
         state.loginLoading = false
@@ -64,6 +82,23 @@ export const userSlice = createSlice({
           state.user = null
         }
       )
+      .addCase(getUserAction.pending, (state) => {
+        state.getUserLoading = true
+        state.getUserLoaded = false
+        state.getUserError = ''
+      })
+      .addCase(getUserAction.fulfilled, (state, action) => {
+        state.getUserLoading = false
+        state.getUserLoaded = true
+        state.getUserError = ''
+        state.user = action.payload
+      })
+      .addCase(getUserAction.rejected, (state, action: PayloadAction<any>) => {
+        state.getUserLoading = false
+        state.getUserLoaded = true
+        state.getUserError = action.payload.message
+        state.user = null
+      })
   },
 })
 
