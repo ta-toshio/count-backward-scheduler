@@ -1,0 +1,10 @@
+
+type Query {
+    users: [User!]! @paginate(defaultCount: 10)
+    user(id: ID @eq): User @find
+}
+
+
+extend type Query @guard {
+    me: User @auth
+}
