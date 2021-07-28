@@ -18,28 +18,6 @@ const User: NextPage = () => {
   )
 }
 
-// export const getServerSideProps = wrapper.getServerSideProps(
-//   (store) => async (ctx) => {
-//     if (!ctx.req.headers.cookie) {
-//       return {
-//         props: {},
-//       }
-//     }
-//     const getParam = {
-//       headers: {
-//         Cookie: ctx.req.headers.cookie,
-//       },
-//     }
-//     await store.dispatch(getUserAction({ getParam }))
-//
-//     console.log('State on server', store.getState())
-//
-//     return {
-//       props: {},
-//     }
-//   }
-// )
-
 export const getServerSideProps = withUserAndReduxServerSideProps(null, {
   secret: true,
 })
