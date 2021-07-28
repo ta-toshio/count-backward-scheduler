@@ -8,7 +8,8 @@
     "format": "prettier --write .",
     "lint": "eslint . --ext ts --ext tsx --ext js",
     "test": "jest",
-    "test-all": "yarn lint && yarn type-check && yarn test"
+    "test-all": "yarn lint && yarn type-check && yarn test",
+    "codegen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
     "@apollo/client": "^3.3.21",
@@ -27,6 +28,11 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "1.21.7",
+    "@graphql-codegen/typescript-operations": "1.18.4",
+    "@graphql-codegen/typescript": "1.23.0",
+    "@graphql-codegen/typescript-react-apollo": "2.3.1",
+    "@graphql-codegen/introspection": "1.18.2",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.0",
