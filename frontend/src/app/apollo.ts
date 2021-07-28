@@ -1,22 +1,41 @@
 import { useMemo } from 'react'
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
+import { setContext } from '@apollo/client/link/context'
 import merge from 'deepmerge'
 import isEqual from 'lodash/isEqual'
+import { isServer } from '../utils/envHelper'
 
 let apolloClient
 
 function createApolloClient() {
-  const isServer = typeof window === 'undefined'
+  const csrfLink = setContext((_, { headers }) => {
+    let token = ''
+    if (!isServer()) {
+      const r = RegExp('XSRF-TOKEN[^;]+').exec(document.cookie)
+      token = decodeURIComponent(r ? r.toString().replace(/^[^=]+./, '') : '')
+    }
+    return {
+      headers: {
+        ...headers,
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-XSRF-TOKEN': token,
+      },
+    }
+  })
+
+  const httpLink = new HttpLink({
+    uri: (() => {
+      return isServer
+        ? process.env.API_SERVER_URI_FROM_SERVER + '/graphql'
+        : process.env.API_SERVER_URI_FROM_BROWSER + '/graphql'
+    })(),
+    // credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
+    credentials: 'include',
+  })
+
   return new ApolloClient({
-    ssrMode: isServer,
-    link: new HttpLink({
-      uri: (() => {
-        return isServer
-          ? process.env.API_SERVER_URI_FROM_SERVER + '/graphql'
-          : process.env.API_SERVER_URI_FROM_BROWSER + '/graphql'
-      })(),
-      credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
-    }),
+    ssrMode: isServer(),
+    link: csrfLink.concat(httpLink),
     cache: new InMemoryCache(),
   })
 }

@@ -1,21 +1,9 @@
-import { gql, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 
 import Layout from '../components/Layout'
 import { initializeApollo } from '../app/apollo'
+import { USERS_QUERY } from '../queries/user'
 
-export const USERS_QUERY = gql`
-  query users($page: Int!) {
-    users(page: $page) {
-      data {
-        id
-        name
-      }
-      paginatorInfo {
-        count
-      }
-    }
-  }
-`
 export const allPostsQueryVars = {
   page: 1,
 }
