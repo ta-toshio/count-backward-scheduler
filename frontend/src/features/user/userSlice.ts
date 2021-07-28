@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppState } from '../../app/store'
 import { getUser, postLogin as postLoginApi } from './userAPI'
-import { HYDRATE } from '../../app/nextRedux'
+import { HYDRATE } from '../../app/withRedux'
 
 export const initialState = {
   isAuthenticated: false,

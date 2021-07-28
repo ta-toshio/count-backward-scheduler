@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { HYDRATE } from '../../app/nextRedux'
+import { HYDRATE } from '../../app/withRedux'
 
 export interface ClockState {
   lastUpdate: number

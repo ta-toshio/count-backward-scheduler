@@ -1,10 +1,9 @@
 import type { NextPage } from 'next'
-import { wrapper } from '../app/store'
 import Layout from '../components/Layout'
 import { useStore } from 'react-redux'
 import { selectRootUser } from '../features/user/userSlice'
 import { useAppSelector } from '../app/hooks'
-import { withUserServerSideProps } from '../app/userProvider'
+import { withUserAndReduxServerSideProps } from '../app/userProvider'
 
 const User: NextPage = () => {
   const { user } = useAppSelector(selectRootUser)
@@ -41,8 +40,8 @@ const User: NextPage = () => {
 //   }
 // )
 
-export const getServerSideProps = wrapper.getServerSideProps((store) =>
-  withUserServerSideProps(() => ({ props: {} }), { store })
-)
+export const getServerSideProps = withUserAndReduxServerSideProps(null, {
+  secret: true,
+})
 
 export default User

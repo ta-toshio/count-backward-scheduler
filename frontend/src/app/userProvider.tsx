@@ -3,6 +3,7 @@ import { useAppDispatch } from './hooks'
 import { getUserAction } from '../features/user/userSlice'
 import { GetServerSidePropsContext } from 'next'
 import { ParsedUrlQuery } from 'querystring'
+import { wrapper } from './store'
 
 const UserProvider: React.FC = ({ children }) => {
   const dispatch = useAppDispatch()
@@ -15,24 +16,24 @@ const UserProvider: React.FC = ({ children }) => {
 
 type withAuthServerSidePropsOptions = {
   redirect?: string
-  store: any
+  secret?: boolean
+  store?: any
 }
 
-export function withUserServerSideProps(
+export const withUserServerSideProps = (
   callback,
   options: withAuthServerSidePropsOptions
-) {
-  if (!options.redirect) {
-    options.redirect = '/login'
+) => {
+  options.redirect = options.redirect ?? '/login'
+  const returnRedirect = {
+    redirect: {
+      destination: options.redirect,
+      permanent: false,
+    },
   }
   return async (ctx: GetServerSidePropsContext<ParsedUrlQuery>) => {
     if (!ctx.req.headers.cookie) {
-      return {
-        redirect: {
-          destination: options.redirect,
-          permanent: false,
-        },
-      }
+      return returnRedirect
     }
 
     const getParam = {
@@ -41,10 +42,24 @@ export function withUserServerSideProps(
       },
     }
 
-    const user = await options.store.dispatch(getUserAction({ getParam }))
+    const user = options.store
+      ? await options.store.dispatch(getUserAction({ getParam }))
+      : getUserAction({ getParam })
+
+    if (user.error && options.secret) {
+      return returnRedirect
+    }
 
     return callback ? await callback(ctx, user) : { props: { user } }
   }
 }
+
+export const withUserAndReduxServerSideProps = (
+  callback = () => ({ props: {} }),
+  options = {}
+) =>
+  wrapper.getServerSideProps((store) =>
+    withUserServerSideProps(callback, { store, ...options })
+  )
 
 export default UserProvider
