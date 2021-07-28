@@ -1,8 +1,9 @@
 import { useQuery } from '@apollo/client'
 
 import Layout from '../components/Layout'
-import { initializeApollo } from '../app/apollo'
 import { USERS_QUERY } from '../queries/user'
+import { ssrUsers } from '../generated/page'
+import { withApollo } from '../app/withApollo'
 
 export const allPostsQueryVars = {
   page: 1,
@@ -43,19 +44,20 @@ const ApolloPage = () => {
 }
 
 export async function getStaticProps() {
-  const apolloClient = initializeApollo()
-
-  await apolloClient.query({
-    query: USERS_QUERY,
+  const res = await ssrUsers.getServerPage({
     variables: allPostsQueryVars,
   })
 
+  if (res.props.error || !res.props.data.users.data.length) {
+    return {
+      notFound: true,
+    }
+  }
+
   return {
-    props: {
-      initialApolloState: apolloClient.cache.extract(),
-    },
+    ...res,
     revalidate: 1,
   }
 }
 
-export default ApolloPage
+export default withApollo(ApolloPage)

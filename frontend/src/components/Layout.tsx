@@ -42,8 +42,17 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
           <Link href="/count">
             <a className="navbar-item">Count</a>
           </Link>
-          <Link href="/use-apollo">
-            <a className="navbar-item">Apollo</a>
+          <Link href="/use-apollo-client-1">
+            <a className="navbar-item">Apollo client 1</a>
+          </Link>
+          <Link href="/use-apollo-client-2">
+            <a className="navbar-item">Apollo client 2</a>
+          </Link>
+          <Link href="/use-apollo-ssg">
+            <a className="navbar-item">Apollo SSG</a>
+          </Link>
+          <Link href="/use-apollo-auth-ssr">
+            <a className="navbar-item">Apollo Auth User SSR</a>
           </Link>
           <Link href="/use-redux">
             <a className="navbar-item">Redux</a>
@@ -53,9 +62,6 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
           </Link>
           <Link href="/users">
             <a className="navbar-item">Users</a>
-          </Link>
-          <Link href="/use-apollo-auth">
-            <a className="navbar-item">Apollo Auth User</a>
           </Link>
         </div>
       </div>

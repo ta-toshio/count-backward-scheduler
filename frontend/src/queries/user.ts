@@ -12,7 +12,7 @@ export const userFragment = gql`
 `
 
 export const USERS_QUERY = gql`
-  query users($page: Int!) {
+  query Users($page: Int!) {
     users(page: $page) {
       data {
         ...userFragment
@@ -26,8 +26,17 @@ export const USERS_QUERY = gql`
 `
 
 export const USER_QUERY = gql`
-  query user($id: ID!) {
+  query User($id: ID!) {
     user(id: $id) {
+      ...userFragment
+    }
+  }
+  ${userFragment}
+`
+
+export const ME_QUERY = gql`
+  query Me {
+    me {
       ...userFragment
     }
   }
