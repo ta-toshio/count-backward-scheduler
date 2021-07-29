@@ -47,25 +47,25 @@ services:
       - DB_USERNAME=myuser
       - DB_PASSWORD=secret
 
-#   client:
-#     build:
-#       context: .
-#       dockerfile: ./infra/docker/nextjs/Dockerfile
-#       args:
-#         NODE_ENV: development
-#     ports:
-#       - 8140:3000
-#     volumes:
-#       - type: bind
-#         source: ./frontend
-#         target: /work/frontend
-#     environment:
-#       - NODE_ENV=development
-#       - APP_HOST=schedule.me
-#     depends_on:
-#       - api-server
-#       - api
-#     tty: true
+   client:
+     build:
+       context: .
+       dockerfile: ./infra/docker/nextjs/Dockerfile
+       args:
+         NODE_ENV: development
+     ports:
+       - 8140:3000
+     volumes:
+       - type: bind
+         source: ./frontend
+         target: /work/frontend
+     environment:
+       - NODE_ENV=development
+       - APP_HOST=schedule.me
+     depends_on:
+       - api-server
+       - api
+     tty: true
 
   db:
     build:
