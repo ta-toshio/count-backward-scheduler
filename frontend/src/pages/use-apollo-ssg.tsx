@@ -2,8 +2,7 @@ import { useQuery } from '@apollo/client'
 
 import Layout from '../components/Layout'
 import { USERS_QUERY } from '../queries/user'
-import { ssrUsers } from '../generated/page'
-import { withApollo } from '../app/withApollo'
+import { addApolloState, initializeApollo } from '../app/withApollo'
 
 export const allPostsQueryVars = {
   page: 1,
@@ -18,8 +17,8 @@ const ApolloPage = () => {
     notifyOnNetworkStatusChange: true,
   })
 
-  if (error) return <div>error</div>
-  if (loading) return <div>Loading</div>
+  if (error) return <Layout>error</Layout>
+  if (loading) return <Layout>Loading</Layout>
 
   const { users: queryResult } = data
   const { data: users } = queryResult
@@ -44,20 +43,14 @@ const ApolloPage = () => {
 }
 
 export async function getStaticProps() {
-  const res = await ssrUsers.getServerPage({
+  const apolloClient = initializeApollo()
+
+  await apolloClient.query({
+    query: USERS_QUERY,
     variables: allPostsQueryVars,
   })
 
-  if (res.props.error || !res.props.data.users.data.length) {
-    return {
-      notFound: true,
-    }
-  }
-
-  return {
-    ...res,
-    revalidate: 1,
-  }
+  return addApolloState(apolloClient, { props: {}, revalidate: 1 })
 }
 
-export default withApollo(ApolloPage)
+export default ApolloPage

@@ -51,8 +51,11 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
           <Link href="/use-apollo-ssg">
             <a className="navbar-item">Apollo SSG</a>
           </Link>
+          <Link href="/use-apollo-ssr">
+            <a className="navbar-item">Apollo U SSR</a>
+          </Link>
           <Link href="/use-apollo-auth-ssr">
-            <a className="navbar-item">Apollo Auth User SSR</a>
+            <a className="navbar-item">Apollo A U SSR</a>
           </Link>
           <Link href="/use-redux">
             <a className="navbar-item">Redux</a>

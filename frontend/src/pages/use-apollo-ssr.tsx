@@ -2,39 +2,36 @@ import { GetServerSideProps } from 'next'
 import { useQuery } from '@apollo/client'
 
 import Layout from '../components/Layout'
-import { ME_QUERY } from '../queries/user'
+import { USER_QUERY } from '../queries/user'
 import { addApolloState, initializeApollo } from '../app/withApollo'
 
 const UseApolloAuthSsr = () => {
-  const { loading, error, data } = useQuery(ME_QUERY)
+  const { loading, error, data } = useQuery(USER_QUERY, {
+    variables: { id: 1 },
+  })
 
   if (error) return <Layout>error</Layout>
   if (loading) return <Layout>Loading</Layout>
 
   return (
     <Layout>
-      <section>{data.me.email}</section>
+      <section>{data.user.email}</section>
     </Layout>
   )
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const headers = {}
-  headers['Cookie'] = ctx.req.headers.cookie
-  headers['Referer'] = process.env.APP_URL
-  const apolloClient = initializeApollo(null, { ctx, headers })
+  const apolloClient = initializeApollo(null, { ctx })
   try {
     await apolloClient.query({
-      query: ME_QUERY,
+      query: USER_QUERY,
+      variables: { id: 1 },
     })
     return addApolloState(apolloClient, { props: {} })
   } catch (e) {
     console.warn(e)
     return {
-      redirect: {
-        permanent: false,
-        destination: '/login',
-      },
+      notFound: true,
     }
   }
 }
