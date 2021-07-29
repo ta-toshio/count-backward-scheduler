@@ -10,20 +10,3 @@ generates:
   ./graphql.schema.json:
     plugins:
       - "introspection"
-  src/generated/page.tsx:
-    config:
-      documentMode: external
-      importDocumentNodeExternallyFrom: ./graphql
-      reactApolloVersion: 3
-      withHooks: true
-      # withHOC: false
-      # excludePatterns: 'getComments'
-      # excludePatternsOptions: 'i'
-      # customDataIdFromObjectName: 'test'
-      # customDataIdFromObjectImport: 'abc'
-      apolloClientInstanceImport: '../app/withApollo'
-    preset: import-types
-    presetConfig:
-      typesPath: ./graphql
-    plugins:
-      - "graphql-codegen-apollo-next-ssr"
