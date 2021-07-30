@@ -16,7 +16,6 @@ const Login: NextPage = () => {
     formErrors,
     submit,
     loginAsGoogle,
-    loginErrorAsSocial,
   } = useLogin()
 
   if (!ready) return <ScreenSpinner />
@@ -76,7 +75,6 @@ const Login: NextPage = () => {
                 </form>
               </div>
               <div>
-                {loginErrorAsSocial && <p>{loginErrorAsSocial}</p>}
                 <button
                   onClick={loginAsGoogle}
                   className={classNames(

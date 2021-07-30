@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { toast } from 'react-toastify'
+
 import firebase from '../../../services/firebase'
 import {
   loginAction,
@@ -33,7 +35,6 @@ const useLogin = () => {
     LoginAsSocialMutation,
     LoginAsSocialMutationVariables
   >(LOGIN_AS_SOCIAL)
-  const [loginErrorAsSocial, setLoginErrorAsSocial] = useState<string>('')
 
   const {
     register,
@@ -66,11 +67,12 @@ const useLogin = () => {
         })
         if (!res.errors) {
           dispatch(loginAction(res.data.loginAsSocial))
+          toast('ログインしました')
           router.replace('/')
         }
       } catch (e) {
         console.error(e.message)
-        setLoginErrorAsSocial('認証に失敗しました')
+        toast('認証に失敗しました')
       }
       setReady(true)
     }
@@ -88,6 +90,7 @@ const useLogin = () => {
     }
     dispatch(postLoginAction(postData)).then((data) => {
       if (data.payload && data.payload.id) {
+        toast('ログインしました')
         router.replace('/')
       }
     })
@@ -106,7 +109,6 @@ const useLogin = () => {
     formErrors,
     submit,
     loginAsGoogle,
-    loginErrorAsSocial,
   }
 }
 
