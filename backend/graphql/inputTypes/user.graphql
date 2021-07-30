@@ -1,0 +1,7 @@
+
+input LoginAsGoogleInput {
+    provider: String!
+    id_token: String!
+    email: String!
+    name: String!
+}

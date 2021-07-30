@@ -1,0 +1,4 @@
+
+type Mutation {
+    loginAsSocial(input: LoginAsGoogleInput!): User
+}
