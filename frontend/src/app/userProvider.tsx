@@ -92,7 +92,7 @@ export const withUserServerSideProps = (
   }
 }
 
-export const withUserWrapperServerSideProps = (
+export const withStateUserServerSideProps = (
   callback = () => ({ props: {} }),
   options = {}
 ) =>
