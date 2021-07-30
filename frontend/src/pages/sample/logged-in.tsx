@@ -1,8 +1,8 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import Layout from '../components/Layout'
+import Layout from '../../components/Layout'
 import { useEffect, useState } from 'react'
-import httpClient from '../app/httpClient'
+import httpClient from '../../app/httpClient'
 
 const LoggedInPage: NextPage = () => {
   const router = useRouter()

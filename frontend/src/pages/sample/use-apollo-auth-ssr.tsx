@@ -1,9 +1,9 @@
 import { GetServerSideProps } from 'next'
 import { useQuery } from '@apollo/client'
 
-import Layout from '../components/Layout'
-import { ME_QUERY } from '../queries/user'
-import { addApolloState, initializeApollo } from '../app/withApollo'
+import Layout from '../../components/Layout'
+import { ME_QUERY } from '../../queries/user'
+import { addApolloState, initializeApollo } from '../../app/withApollo'
 
 const UseApolloAuthSsr = () => {
   const { loading, error, data } = useQuery(ME_QUERY)

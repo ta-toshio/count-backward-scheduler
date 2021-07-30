@@ -1,8 +1,8 @@
-import Layout from '../components/Layout'
-import { useAppDispatch, useInterval } from '../app/hooks'
-import Clock from '../features/clock/Clock'
-import { tick } from '../features/clock/clockSlice'
-import { wrapper } from '../app/store'
+import Layout from '../../components/Layout'
+import { useAppDispatch, useInterval } from '../../app/hooks'
+import Clock from '../../features/clock/Clock'
+import { tick } from '../../features/clock/clockSlice'
+import { wrapper } from '../../app/store'
 import { useStore } from 'react-redux'
 
 function ReduxPage() {

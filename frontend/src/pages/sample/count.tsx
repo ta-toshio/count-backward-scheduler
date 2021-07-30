@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 
-import Counter from '../features/counter/Counter'
-import Layout from '../components/Layout'
+import Counter from '../../features/counter/Counter'
+import Layout from '../../components/Layout'
 
 const CounterPage: NextPage = () => {
   return (

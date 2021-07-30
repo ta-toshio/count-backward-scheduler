@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'
 
-import Layout from '../components/Layout'
-import { USERS_QUERY } from '../queries/user'
+import Layout from '../../components/Layout'
+import { USERS_QUERY } from '../../queries/user'
 
 export const allPostsQueryVars = {
   page: 1,
