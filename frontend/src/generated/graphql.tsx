@@ -20,6 +20,23 @@ export type Scalars = {
 
 
 
+export type LoginAsGoogleInput = {
+  provider: Scalars['String'];
+  id_token: Scalars['String'];
+  email: Scalars['String'];
+  name: Scalars['String'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  loginAsSocial?: Maybe<User>;
+};
+
+
+export type MutationLoginAsSocialArgs = {
+  input: LoginAsGoogleInput;
+};
+
 /** Allows ordering a list of records. */
 export type OrderByClause = {
   /** The column that is used for ordering. */
@@ -188,6 +205,19 @@ export type MeQuery = (
   )> }
 );
 
+export type LoginAsSocialMutationVariables = Exact<{
+  input: LoginAsGoogleInput;
+}>;
+
+
+export type LoginAsSocialMutation = (
+  { __typename?: 'Mutation' }
+  & { loginAsSocial?: Maybe<(
+    { __typename?: 'User' }
+    & UserFragmentFragment
+  )> }
+);
+
 export const UserFragmentFragmentDoc = gql`
     fragment userFragment on User {
   id
@@ -307,3 +337,36 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const LoginAsSocialDocument = gql`
+    mutation LoginAsSocial($input: LoginAsGoogleInput!) {
+  loginAsSocial(input: $input) {
+    ...userFragment
+  }
+}
+    ${UserFragmentFragmentDoc}`;
+export type LoginAsSocialMutationFn = Apollo.MutationFunction<LoginAsSocialMutation, LoginAsSocialMutationVariables>;
+
+/**
+ * __useLoginAsSocialMutation__
+ *
+ * To run a mutation, you first call `useLoginAsSocialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginAsSocialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginAsSocialMutation, { data, loading, error }] = useLoginAsSocialMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useLoginAsSocialMutation(baseOptions?: Apollo.MutationHookOptions<LoginAsSocialMutation, LoginAsSocialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginAsSocialMutation, LoginAsSocialMutationVariables>(LoginAsSocialDocument, options);
+      }
+export type LoginAsSocialMutationHookResult = ReturnType<typeof useLoginAsSocialMutation>;
+export type LoginAsSocialMutationResult = Apollo.MutationResult<LoginAsSocialMutation>;
+export type LoginAsSocialMutationOptions = Apollo.BaseMutationOptions<LoginAsSocialMutation, LoginAsSocialMutationVariables>;
