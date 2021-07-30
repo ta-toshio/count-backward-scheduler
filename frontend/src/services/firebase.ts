@@ -13,6 +13,4 @@ if (!firebase.apps.length) {
   })
 }
 
-console.log(process.env.NEXT_PUBLIC_appId)
-
 export default firebase

@@ -3,7 +3,7 @@ import Layout from '../components/Layout'
 import { useStore } from 'react-redux'
 import { selectRootUser } from '../features/user/userSlice'
 import { useAppSelector } from '../app/hooks'
-import { withUserAndReduxServerSideProps } from '../app/userProvider'
+import { withUserWrapperServerSideProps } from '../app/userProvider'
 
 const User: NextPage = () => {
   const { user } = useAppSelector(selectRootUser)
@@ -18,7 +18,7 @@ const User: NextPage = () => {
   )
 }
 
-export const getServerSideProps = withUserAndReduxServerSideProps(null, {
+export const getServerSideProps = withUserWrapperServerSideProps(null, {
   secret: true,
 })
 

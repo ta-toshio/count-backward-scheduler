@@ -1,18 +1,56 @@
 import React, { useEffect } from 'react'
-import { useAppDispatch } from './hooks'
-import { getUserAction } from '../features/user/userSlice'
+import { useAppDispatch, useAppSelector } from './hooks'
+import { getUserAction, selectRootUser } from '../features/user/userSlice'
 import { GetServerSidePropsContext } from 'next'
 import { ParsedUrlQuery } from 'querystring'
 import { wrapper } from './store'
+import { useRouter } from 'next/router'
+import ScreenSpinner from '../components/spinner/Spinner'
+
+interface AuthRedirect {
+  require: boolean
+  redirect?: string
+  redirectIfLoggedIn?: string
+}
 
 const UserProvider: React.FC = ({ children }) => {
   const dispatch = useAppDispatch()
+
   useEffect(() => {
     dispatch(getUserAction())
   }, [])
 
   return <>{children}</>
 }
+
+const useRedirectOnAuthentication = (auth: AuthRedirect) => {
+  const router = useRouter()
+  const { isAuthenticated, getUserLoaded } = useAppSelector(selectRootUser)
+
+  useEffect(() => {
+    if (!auth) {
+      return
+    }
+
+    if (getUserLoaded) {
+      if (auth.require && auth.redirect && !isAuthenticated) {
+        router.push(auth.redirect)
+      }
+
+      if (auth.redirectIfLoggedIn && isAuthenticated) {
+        router.replace(auth.redirectIfLoggedIn)
+      }
+    }
+  }, [getUserLoaded])
+}
+
+export const redirectHoc =
+  (auth: AuthRedirect) => (WrappedComponent) => (props) => {
+    const { getUserLoaded } = useAppSelector(selectRootUser)
+    useRedirectOnAuthentication(auth)
+    if (!getUserLoaded) return <ScreenSpinner />
+    return <WrappedComponent {...props} />
+  }
 
 type withAuthServerSidePropsOptions = {
   redirect?: string
@@ -54,7 +92,7 @@ export const withUserServerSideProps = (
   }
 }
 
-export const withUserAndReduxServerSideProps = (
+export const withUserWrapperServerSideProps = (
   callback = () => ({ props: {} }),
   options = {}
 ) =>
