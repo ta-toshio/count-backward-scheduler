@@ -1,4 +1,4 @@
-import react, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getCsrfCookie } from '../features/user/userAPI'
 
 const CsrfProvider: React.FC = ({ children }) => {

@@ -42,3 +42,12 @@ export const ME_QUERY = gql`
   }
   ${userFragment}
 `
+
+export const LOGIN_AS_SOCIAL = gql`
+  mutation LoginAsSocial($input: LoginAsGoogleInput!) {
+    loginAsSocial(input: $input) {
+      ...userFragment
+    }
+  }
+  ${userFragment}
+`
