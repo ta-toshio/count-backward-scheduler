@@ -1,6 +1,7 @@
 import Layout from '../components/Layout'
+import type { NextPage } from 'next'
 
-const Board3 = () => {
+const Board: NextPage = () => {
   return (
     <Layout>
       <main className="board-main">
@@ -44,4 +45,4 @@ const Board3 = () => {
   )
 }
 
-export default Board3
+export default Board
