@@ -1,7 +1,6 @@
-import Layout from '../components/Layout'
-import type { NextPage } from 'next'
+import Layout from '../../../components/Layout'
 
-const Board: NextPage = () => {
+const Board = () => {
   return (
     <Layout>
       <main className="board-main">

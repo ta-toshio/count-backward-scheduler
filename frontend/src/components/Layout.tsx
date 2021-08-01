@@ -30,13 +30,7 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
         <div className="container">
           <div className="navbar-brand">
             <Link href="/">
-              <a className="navbar-item">
-                <img
-                  src="https://bulma.io/images/bulma-logo.png"
-                  width="112"
-                  height="28"
-                />
-              </a>
+              <a className="navbar-item">Schedule</a>
             </Link>
           </div>
 
@@ -47,20 +41,6 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
                   <a className="navbar-item">Login</a>
                 </Link>
               )}
-              <div className="navbar-item has-dropdown is-hoverable">
-                <a className="navbar-link">Board</a>
-                <div className="navbar-dropdown">
-                  <Link href="/board-1">
-                    <a className="navbar-item">board 1</a>
-                  </Link>
-                  <Link href="/board-2">
-                    <a className="navbar-item">board 2</a>
-                  </Link>
-                  <Link href="/board-3">
-                    <a className="navbar-item">board 3</a>
-                  </Link>
-                </div>
-              </div>
               <div className="navbar-item has-dropdown is-hoverable">
                 <a className="navbar-link">Sample</a>
                 <div className="navbar-dropdown">
