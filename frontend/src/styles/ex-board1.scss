@@ -1,0 +1,106 @@
+.project-board {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+}
+
+.project-board__content {
+    width: 100%;
+    transition: width .35s ease, padding-right .35s ease;
+    padding-right: 0;
+    height: 100%;
+    background-color: #fff;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.project-board__content {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+
+.project-board__content-body {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    height: 100%;
+    padding: 15px;
+}
+
+.list-item-sortable {
+    height: 100%;
+}
+
+.project-board .box {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 5px;
+    min-width: 290px;
+    width: 290px;
+    height: 100%;
+    border-radius: 8px;
+    background-color: #f9f7f5;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 20%);
+    margin: 0 15px 30px 0;
+}
+
+
+.project-board .box__top {
+    padding: 5px 10px 10px;
+    cursor: pointer;
+}
+
+.project-board .box__top.box__top--grabbable {
+    cursor: move;
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+
+.project-board .box__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.project-board .box__title-name {
+    font-size: 13px;
+    color: #56595d;
+    margin-bottom: 0;
+}
+
+
+.project-board .box__list-task {
+    flex: 1;
+    padding: 0 10px 10px;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.project-board .box__list-task {
+    padding-top: 2px;
+    overflow-x: hidden !important;
+}
+
+
+.box__list-task .task-item {
+    padding: 5px 10px;
+}
+.task-item:not(:last-child) {
+    margin-bottom: 10px;
+}
+.task-item {
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 1px 2px 1px 1px rgb(155 155 155 / 20%);
+    color: #9b9b9b;
+    position: relative;
+    padding: 5px 5px 5px 10px;
+    cursor: pointer;
+    word-break: break-word;
+}
+
+

@@ -3,8 +3,8 @@ import Link from 'next/link'
 import Head from 'next/head'
 import httpClient from '../app/httpClient'
 import firebase from '../services/firebase'
-import { useAppDispatch } from '../app/hooks'
-import { logoutAction } from '../features/user/userSlice'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
+import { logoutAction, selectRootUser } from '../features/user/userSlice'
 import { toast } from 'react-toastify'
 import { CircleLoadingIcon } from './icon/SvgIcon'
 
@@ -15,6 +15,7 @@ type Props = {
 
 const Layout = ({ children, title = 'This is the default title' }: Props) => {
   const dispatch = useAppDispatch()
+  const { isAuthenticated } = useAppSelector(selectRootUser)
   const [isLogout, setIsLogout] = useState<boolean>(false)
 
   return (
@@ -41,9 +42,25 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
 
           <div className="navbar-menu">
             <div className="navbar-end">
-              <Link href="/login">
-                <a className="navbar-item">Login</a>
-              </Link>
+              {!isAuthenticated && (
+                <Link href="/login">
+                  <a className="navbar-item">Login</a>
+                </Link>
+              )}
+              <div className="navbar-item has-dropdown is-hoverable">
+                <a className="navbar-link">Board</a>
+                <div className="navbar-dropdown">
+                  <Link href="/board-1">
+                    <a className="navbar-item">board 1</a>
+                  </Link>
+                  <Link href="/board-2">
+                    <a className="navbar-item">board 2</a>
+                  </Link>
+                  <Link href="/board-3">
+                    <a className="navbar-item">board 3</a>
+                  </Link>
+                </div>
+              </div>
               <div className="navbar-item has-dropdown is-hoverable">
                 <a className="navbar-link">Sample</a>
                 <div className="navbar-dropdown">
@@ -82,49 +99,51 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
                   </Link>
                 </div>
               </div>
-              <div className="navbar-item has-dropdown is-hoverable">
-                <a className="navbar-link">Account</a>
-                <div className="navbar-dropdown">
-                  {!isLogout && (
-                    <a
-                      className="navbar-item"
-                      onClick={async (e) => {
-                        e.preventDefault()
-                        if (isLogout) {
-                          return
-                        }
-                        setIsLogout(true)
-                        try {
-                          await httpClient.post('/logout')
-                          dispatch(logoutAction())
-                          toast('ログアウトしました')
-                          await firebase.auth().signOut()
-                        } catch (e) {
-                          console.error(e)
-                        }
-                        setIsLogout(false)
-                      }}
-                    >
-                      ログアウト
-                    </a>
-                  )}
-                  {isLogout && (
-                    <a
-                      className="navbar-item dropdown-item-center"
-                      onClick={(e) => {
-                        e.preventDefault()
-                      }}
-                    >
-                      <CircleLoadingIcon />
-                    </a>
-                  )}
+              {isAuthenticated && (
+                <div className="navbar-item has-dropdown is-hoverable">
+                  <a className="navbar-link">Account</a>
+                  <div className="navbar-dropdown">
+                    {!isLogout && (
+                      <a
+                        className="navbar-item"
+                        onClick={async (e) => {
+                          e.preventDefault()
+                          if (isLogout) {
+                            return
+                          }
+                          setIsLogout(true)
+                          try {
+                            await httpClient.post('/logout')
+                            dispatch(logoutAction())
+                            toast('ログアウトしました')
+                            await firebase.auth().signOut()
+                          } catch (e) {
+                            console.error(e)
+                          }
+                          setIsLogout(false)
+                        }}
+                      >
+                        ログアウト
+                      </a>
+                    )}
+                    {isLogout && (
+                      <a
+                        className="navbar-item dropdown-item-center"
+                        onClick={(e) => {
+                          e.preventDefault()
+                        }}
+                      >
+                        <CircleLoadingIcon />
+                      </a>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
       </nav>
-      {children}
+      <main>{children}</main>
       <footer>
         <section className="hero is-medium has-text-centered">
           <div className="hero-body">

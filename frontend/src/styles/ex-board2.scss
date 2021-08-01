@@ -1,0 +1,54 @@
+.cal-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 52px);
+}
+
+.cal-header {
+    height: 100px;
+    background: #FA7C91;
+}
+
+.cal-body {
+    flex: 1 1 0%;
+    background: #8A4D76;
+}
+
+.cal-items-wrapper {
+    white-space: nowrap;
+    overflow-x: auto;
+    height: 100%;
+    padding: 16px;
+    background: #cc8ef5;
+}
+
+.cal-items {
+    display: inline-block;
+    width: 300px;
+    height: 100%;
+    margin-right: 16px;
+    background: #a4af45;
+    vertical-align: top;
+}
+
+/* scrollbar */
+.scrollbar::-webkit-scrollbar-button {
+  display: block;
+  height: 4px;
+  width: 4px;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(9,30,66,.25);
+}
+.scrollbar::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+}
+.scrollbar::-webkit-scrollbar-track-piece {
+  background: rgba(9,30,66,.15);
+}
+
+.scrollbar {
+  -webkit-overflow-scrolling: touch;
+  -webkit-transform: translateZ(0);
+}

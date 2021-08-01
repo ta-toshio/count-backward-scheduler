@@ -1,0 +1,116 @@
+
+.board-main {
+    height: calc(100vh - 52px);
+    display: flex;
+}
+
+.board-canvas {
+    position: relative;
+    flex-grow: 1;
+    background: #4fbbaa;
+}
+
+.board {
+    -webkit-user-select: none;
+    user-select: none;
+    white-space: nowrap;
+    margin-bottom: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-top: 16px;
+    padding-bottom: 8px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.list-wrapper {
+    width: 272px;
+    margin: 0 4px;
+    height: 100%;
+    box-sizing: border-box;
+    display: inline-block;
+    vertical-align: top;
+    white-space: nowrap;
+}
+
+.list-wrapper:first-child {
+    margin-left: 8px;
+}
+
+.list {
+    background-color: #ebecf0;
+    border-radius: 3px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    position: relative;
+    white-space: normal;
+
+    height: 100%;
+}
+
+.list-header {
+    flex: 0 0 auto;
+    padding: 10px 8px;
+    position: relative;
+    min-height: 20px;
+}
+
+.list-cards {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin: 0 4px;
+    padding: 0 4px;
+    z-index: 1;
+    min-height: 0;
+
+    background: #f5f3f3;
+}
+
+.list-footer {
+    min-height: 38px;
+    max-height: 38px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.list-card {
+    background-color: #fff;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgb(9 30 66 / 25%);
+    cursor: pointer;
+    display: block;
+    margin-bottom: 8px;
+    max-width: 300px;
+    min-height: 20px;
+    position: relative;
+    text-decoration: none;
+    z-index: 0;
+}
+
+/* scrollbar */
+.scrollbar::-webkit-scrollbar-button {
+    display: block;
+    height: 4px;
+    width: 4px;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(9,30,66,.25);
+}
+.scrollbar::-webkit-scrollbar {
+    height: 12px;
+    width: 12px;
+}
+.scrollbar::-webkit-scrollbar-track-piece {
+    background: rgba(9,30,66,.15);
+}
+
+.scrollbar {
+    -webkit-overflow-scrolling: touch;
+    -webkit-transform: translateZ(0);
+}
