@@ -51,7 +51,19 @@ function createApolloClient(options) {
   return new ApolloClient({
     ssrMode: isServer(),
     link: concat(csrfLink, httpLink),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            // calendar: {
+            //   keyArgs: false,
+            //   merge(existing = [], incoming) {
+            //   },
+            // },
+          },
+        },
+      },
+    }),
   })
 }
 

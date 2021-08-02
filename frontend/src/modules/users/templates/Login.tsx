@@ -2,7 +2,7 @@ import React from 'react'
 import type { NextPage } from 'next'
 import classNames from 'classnames'
 
-import useLogin from '../containers/Login'
+import useLogin from '../containers/useLogin'
 import Layout from '../../../components/Layout'
 import ScreenSpinner from '../../../components/spinner/Spinner'
 
