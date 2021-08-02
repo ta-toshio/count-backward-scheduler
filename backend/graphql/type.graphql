@@ -1,1 +1,2 @@
 #import ./types/user.graphql
+#import ./types/calendar.graphql

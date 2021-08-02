@@ -23,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+//        \Illuminate\Support\Facades\DB::listen(function ($query) {
+//            \Illuminate\Support\Facades\Log::info("Query Time:{$query->time}s] $query->sql");
+//        });
     }
 }
