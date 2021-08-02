@@ -18,6 +18,18 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Calendar = {
+  __typename?: 'Calendar';
+  data: Array<ScheduledTask>;
+  info: CalendarPageInfo;
+};
+
+export type CalendarPageInfo = {
+  __typename?: 'CalendarPageInfo';
+  next: Scalars['Boolean'];
+  prev: Scalars['Boolean'];
+};
+
 
 
 export type LoginAsGoogleInput = {
@@ -91,6 +103,7 @@ export type Query = {
   __typename?: 'Query';
   user?: Maybe<User>;
   me?: Maybe<User>;
+  calendar: Calendar;
   users?: Maybe<UserPaginator>;
 };
 
@@ -100,9 +113,29 @@ export type QueryUserArgs = {
 };
 
 
+export type QueryCalendarArgs = {
+  start?: Maybe<Scalars['Date']>;
+  end?: Maybe<Scalars['Date']>;
+};
+
+
 export type QueryUsersArgs = {
   first?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
+};
+
+export type ScheduledTask = {
+  __typename?: 'ScheduledTask';
+  id: Scalars['ID'];
+  user_id: Scalars['Int'];
+  project_id: Scalars['Int'];
+  task_id: Scalars['Int'];
+  the_date: Scalars['Date'];
+  point: Scalars['Int'];
+  volume: Scalars['Float'];
+  created_at?: Maybe<Scalars['DateTime']>;
+  updated_at?: Maybe<Scalars['DateTime']>;
+  task: Task;
 };
 
 /** Information about pagination using a simple paginator. */
@@ -127,6 +160,20 @@ export enum SortOrder {
   /** Sort records in descending order. */
   Desc = 'DESC'
 }
+
+export type Task = {
+  __typename?: 'Task';
+  id: Scalars['ID'];
+  user_id: Scalars['Int'];
+  project_id: Scalars['Int'];
+  title: Scalars['String'];
+  point: Scalars['Int'];
+  org_point: Scalars['Float'];
+  volume: Scalars['Int'];
+  days: Scalars['String'];
+  created_at?: Maybe<Scalars['DateTime']>;
+  updated_at?: Maybe<Scalars['DateTime']>;
+};
 
 /** Specify if you want to include or exclude trashed results from a query. */
 export enum Trashed {
@@ -156,6 +203,40 @@ export type UserPaginator = {
   /** A list of User items. */
   data: Array<User>;
 };
+
+export type TaskFragmentFragment = (
+  { __typename?: 'Task' }
+  & Pick<Task, 'id' | 'user_id' | 'project_id' | 'title' | 'point' | 'org_point' | 'volume' | 'days' | 'created_at' | 'updated_at'>
+);
+
+export type ScheduledTaskFragmentFragment = (
+  { __typename?: 'ScheduledTask' }
+  & Pick<ScheduledTask, 'id' | 'user_id' | 'project_id' | 'task_id' | 'the_date' | 'point' | 'volume' | 'created_at' | 'updated_at'>
+);
+
+export type CalendarQueryVariables = Exact<{
+  start?: Maybe<Scalars['Date']>;
+  end?: Maybe<Scalars['Date']>;
+}>;
+
+
+export type CalendarQuery = (
+  { __typename?: 'Query' }
+  & { calendar: (
+    { __typename?: 'Calendar' }
+    & { data: Array<(
+      { __typename?: 'ScheduledTask' }
+      & { task: (
+        { __typename?: 'Task' }
+        & TaskFragmentFragment
+      ) }
+      & ScheduledTaskFragmentFragment
+    )>, info: (
+      { __typename?: 'CalendarPageInfo' }
+      & Pick<CalendarPageInfo, 'prev' | 'next'>
+    ) }
+  ) }
+);
 
 export type UserFragmentFragment = (
   { __typename?: 'User' }
@@ -218,6 +299,33 @@ export type LoginAsSocialMutation = (
   )> }
 );
 
+export const TaskFragmentFragmentDoc = gql`
+    fragment taskFragment on Task {
+  id
+  user_id
+  project_id
+  title
+  point
+  org_point
+  volume
+  days
+  created_at
+  updated_at
+}
+    `;
+export const ScheduledTaskFragmentFragmentDoc = gql`
+    fragment scheduledTaskFragment on ScheduledTask {
+  id
+  user_id
+  project_id
+  task_id
+  the_date
+  point
+  volume
+  created_at
+  updated_at
+}
+    `;
 export const UserFragmentFragmentDoc = gql`
     fragment userFragment on User {
   id
@@ -228,6 +336,52 @@ export const UserFragmentFragmentDoc = gql`
   updated_at
 }
     `;
+export const CalendarDocument = gql`
+    query Calendar($start: Date, $end: Date) {
+  calendar(start: $start, end: $end) {
+    data {
+      ...scheduledTaskFragment
+      task {
+        ...taskFragment
+      }
+    }
+    info {
+      prev
+      next
+    }
+  }
+}
+    ${ScheduledTaskFragmentFragmentDoc}
+${TaskFragmentFragmentDoc}`;
+
+/**
+ * __useCalendarQuery__
+ *
+ * To run a query within a React component, call `useCalendarQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalendarQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalendarQuery({
+ *   variables: {
+ *      start: // value for 'start'
+ *      end: // value for 'end'
+ *   },
+ * });
+ */
+export function useCalendarQuery(baseOptions?: Apollo.QueryHookOptions<CalendarQuery, CalendarQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CalendarQuery, CalendarQueryVariables>(CalendarDocument, options);
+      }
+export function useCalendarLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CalendarQuery, CalendarQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CalendarQuery, CalendarQueryVariables>(CalendarDocument, options);
+        }
+export type CalendarQueryHookResult = ReturnType<typeof useCalendarQuery>;
+export type CalendarLazyQueryHookResult = ReturnType<typeof useCalendarLazyQuery>;
+export type CalendarQueryResult = Apollo.QueryResult<CalendarQuery, CalendarQueryVariables>;
 export const UsersDocument = gql`
     query Users($page: Int!) {
   users(page: $page) {
