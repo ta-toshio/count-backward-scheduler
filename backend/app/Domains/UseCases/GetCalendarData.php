@@ -20,7 +20,7 @@ class GetCalendarData
     {
         $data = $this->scheduledTaskRepository->findAllBetween($userId, $start, $end);
         $hasPrev = $this->scheduledTaskRepository->existsLt($userId, $start);
-        $hasNext = $this->scheduledTaskRepository->existsGt($userId, $start);
+        $hasNext = $this->scheduledTaskRepository->existsGt($userId, $end);
         return [
             'data' => $data,
             'prev' => $hasPrev,
