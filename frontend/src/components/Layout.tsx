@@ -13,7 +13,7 @@ type Props = {
   title?: string
 }
 
-const Layout = ({ children, title = 'This is the default title' }: Props) => {
+const Layout = ({ children, title = '' }: Props) => {
   const dispatch = useAppDispatch()
   const { isAuthenticated } = useAppSelector(selectRootUser)
   const [isLogout, setIsLogout] = useState<boolean>(false)
@@ -41,6 +41,8 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
                   <a className="navbar-item">Login</a>
                 </Link>
               )}
+
+              {/*
               <div className="navbar-item has-dropdown is-hoverable">
                 <a className="navbar-link">Sample</a>
                 <div className="navbar-dropdown">
@@ -79,6 +81,8 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
                   </Link>
                 </div>
               </div>
+              */}
+
               {isAuthenticated && (
                 <div className="navbar-item has-dropdown is-hoverable">
                   <a className="navbar-link">Account</a>
