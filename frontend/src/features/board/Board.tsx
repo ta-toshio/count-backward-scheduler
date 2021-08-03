@@ -1,16 +1,22 @@
 import React from 'react'
 import { NextPage } from 'next'
-import Layout from '../../../components/Layout'
-import useBoard from '../containers/useBoard'
-import ScreenSpinner from '../../../components/spinner/Spinner'
-
-const Item = ({ scheduledTask }) => (
-  <span className="board-task">{scheduledTask.task.title}</span>
-)
+import Layout from '../../components/Layout'
+import useBoard from './useBoard'
+import ScreenSpinner from '../../components/spinner/Spinner'
+import BoardTaskItem from './BoardTaskItem'
+import useProject from '../app/useProject'
+import { getCoefFromProject } from '../../utils/appUtil'
 
 const Board: NextPage = () => {
-  const { loading, data, calendarData, prevCalendarData, fetchMoreHandler } =
-    useBoard()
+  const {
+    loading,
+    data,
+    calendarData,
+    prevCalendarData,
+    fetchMoreHandler,
+    fetchMoreLoading,
+  } = useBoard()
+  const { myProjects } = useProject()
   if (loading) return <ScreenSpinner />
 
   return (
@@ -45,9 +51,13 @@ const Board: NextPage = () => {
                                   {prevCalendarData[yearMonth][week][
                                     theDate
                                   ].map((scheduledTask, i) => (
-                                    <Item
+                                    <BoardTaskItem
                                       key={`prev-cal-${yearMonth}-${week}-${theDate}-${theDate}-${i}`}
                                       scheduledTask={scheduledTask}
+                                      coef={getCoefFromProject(
+                                        scheduledTask.task.project_id,
+                                        myProjects && myProjects.data
+                                      )}
                                     />
                                   ))}
                                 </React.Fragment>
@@ -82,9 +92,13 @@ const Board: NextPage = () => {
                               </div>
                               {calendarData[yearMonth][week][theDate].map(
                                 (scheduledTask, i) => (
-                                  <Item
+                                  <BoardTaskItem
                                     key={`cal-${yearMonth}-${week}-${theDate}-${theDate}-${i}`}
                                     scheduledTask={scheduledTask}
+                                    coef={getCoefFromProject(
+                                      scheduledTask.task.project_id,
+                                      myProjects && myProjects.data
+                                    )}
                                   />
                                 )
                               )}
@@ -94,17 +108,23 @@ const Board: NextPage = () => {
                       </React.Fragment>
                     ))}
                   </div>
-                  <div className="board-line-footer"></div>
+                  <div className="board-line-footer" />
                 </div>
               </div>
             ))}
             {data && data.calendar && data.calendar.info.next && (
-              <div className="list-wrapper">
-                <div className="list">
-                  <div className="list-header"></div>
-                  <div className="list-cards">
-                    <button onClick={fetchMoreHandler}>もっと読み込む</button>
+              <div className="board-line-wrapper">
+                <div className="board-line more">
+                  <div className="board-line-title" />
+                  <div className="board-line-content">
+                    <button
+                      onClick={fetchMoreHandler}
+                      disabled={fetchMoreLoading}
+                    >
+                      もっと読み込む
+                    </button>
                   </div>
+                  <div className="board-line-footer" />
                 </div>
               </div>
             )}

@@ -30,6 +30,20 @@ export type CalendarPageInfo = {
   prev: Scalars['Boolean'];
 };
 
+export type Config = {
+  __typename?: 'Config';
+  id: Scalars['ID'];
+  user_id: Scalars['Int'];
+  start_date: Scalars['Date'];
+  sprint: Scalars['Int'];
+  hour_of_day: Scalars['Float'];
+  point_of_day: Scalars['Float'];
+  project_of_day: Scalars['Int'];
+  holidays: Scalars['String'];
+  created_at?: Maybe<Scalars['DateTime']>;
+  updated_at?: Maybe<Scalars['DateTime']>;
+};
+
 
 
 export type LoginAsGoogleInput = {
@@ -99,12 +113,38 @@ export type PaginatorInfo = {
   total: Scalars['Int'];
 };
 
+export type Project = {
+  __typename?: 'Project';
+  id: Scalars['ID'];
+  user_id: Scalars['Int'];
+  slug: Scalars['String'];
+  title: Scalars['String'];
+  start_date?: Maybe<Scalars['Date']>;
+  end_date?: Maybe<Scalars['Date']>;
+  ratio: Scalars['Float'];
+  coef: Scalars['Float'];
+  color: Scalars['String'];
+  created_at?: Maybe<Scalars['DateTime']>;
+  updated_at?: Maybe<Scalars['DateTime']>;
+};
+
+/** A paginated list of Project items. */
+export type ProjectPaginator = {
+  __typename?: 'ProjectPaginator';
+  /** Pagination information about the list of items. */
+  paginatorInfo: PaginatorInfo;
+  /** A list of Project items. */
+  data: Array<Project>;
+};
+
 export type Query = {
   __typename?: 'Query';
   user?: Maybe<User>;
   me?: Maybe<User>;
+  myConfig?: Maybe<Config>;
   calendar: Calendar;
   users?: Maybe<UserPaginator>;
+  myProjects?: Maybe<ProjectPaginator>;
 };
 
 
@@ -120,6 +160,12 @@ export type QueryCalendarArgs = {
 
 
 export type QueryUsersArgs = {
+  first?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryMyProjectsArgs = {
   first?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
 };
@@ -204,6 +250,27 @@ export type UserPaginator = {
   data: Array<User>;
 };
 
+export type PaginatorInfoFragmentFragment = (
+  { __typename?: 'PaginatorInfo' }
+  & Pick<PaginatorInfo, 'count' | 'currentPage' | 'firstItem' | 'hasMorePages' | 'lastItem' | 'lastPage' | 'perPage' | 'total'>
+);
+
+export type ConfigFragmentFragment = (
+  { __typename?: 'Config' }
+  & Pick<Config, 'id' | 'user_id' | 'start_date' | 'sprint' | 'hour_of_day' | 'point_of_day' | 'project_of_day' | 'holidays' | 'created_at' | 'updated_at'>
+);
+
+export type MyConfigQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyConfigQuery = (
+  { __typename?: 'Query' }
+  & { myConfig?: Maybe<(
+    { __typename?: 'Config' }
+    & ConfigFragmentFragment
+  )> }
+);
+
 export type TaskFragmentFragment = (
   { __typename?: 'Task' }
   & Pick<Task, 'id' | 'user_id' | 'project_id' | 'title' | 'point' | 'org_point' | 'volume' | 'days' | 'created_at' | 'updated_at'>
@@ -236,6 +303,30 @@ export type CalendarQuery = (
       & Pick<CalendarPageInfo, 'prev' | 'next'>
     ) }
   ) }
+);
+
+export type ProjectFragmentFragment = (
+  { __typename?: 'Project' }
+  & Pick<Project, 'id' | 'user_id' | 'slug' | 'title' | 'start_date' | 'end_date' | 'ratio' | 'coef' | 'color' | 'created_at' | 'updated_at'>
+);
+
+export type MyProjectsQueryVariables = Exact<{
+  page: Scalars['Int'];
+}>;
+
+
+export type MyProjectsQuery = (
+  { __typename?: 'Query' }
+  & { myProjects?: Maybe<(
+    { __typename?: 'ProjectPaginator' }
+    & { data: Array<(
+      { __typename?: 'Project' }
+      & ProjectFragmentFragment
+    )>, paginatorInfo: (
+      { __typename?: 'PaginatorInfo' }
+      & PaginatorInfoFragmentFragment
+    ) }
+  )> }
 );
 
 export type UserFragmentFragment = (
@@ -299,6 +390,32 @@ export type LoginAsSocialMutation = (
   )> }
 );
 
+export const PaginatorInfoFragmentFragmentDoc = gql`
+    fragment paginatorInfoFragment on PaginatorInfo {
+  count
+  currentPage
+  firstItem
+  hasMorePages
+  lastItem
+  lastPage
+  perPage
+  total
+}
+    `;
+export const ConfigFragmentFragmentDoc = gql`
+    fragment configFragment on Config {
+  id
+  user_id
+  start_date
+  sprint
+  hour_of_day
+  point_of_day
+  project_of_day
+  holidays
+  created_at
+  updated_at
+}
+    `;
 export const TaskFragmentFragmentDoc = gql`
     fragment taskFragment on Task {
   id
@@ -326,6 +443,21 @@ export const ScheduledTaskFragmentFragmentDoc = gql`
   updated_at
 }
     `;
+export const ProjectFragmentFragmentDoc = gql`
+    fragment projectFragment on Project {
+  id
+  user_id
+  slug
+  title
+  start_date
+  end_date
+  ratio
+  coef
+  color
+  created_at
+  updated_at
+}
+    `;
 export const UserFragmentFragmentDoc = gql`
     fragment userFragment on User {
   id
@@ -336,6 +468,40 @@ export const UserFragmentFragmentDoc = gql`
   updated_at
 }
     `;
+export const MyConfigDocument = gql`
+    query MyConfig {
+  myConfig {
+    ...configFragment
+  }
+}
+    ${ConfigFragmentFragmentDoc}`;
+
+/**
+ * __useMyConfigQuery__
+ *
+ * To run a query within a React component, call `useMyConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyConfigQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMyConfigQuery(baseOptions?: Apollo.QueryHookOptions<MyConfigQuery, MyConfigQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MyConfigQuery, MyConfigQueryVariables>(MyConfigDocument, options);
+      }
+export function useMyConfigLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyConfigQuery, MyConfigQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MyConfigQuery, MyConfigQueryVariables>(MyConfigDocument, options);
+        }
+export type MyConfigQueryHookResult = ReturnType<typeof useMyConfigQuery>;
+export type MyConfigLazyQueryHookResult = ReturnType<typeof useMyConfigLazyQuery>;
+export type MyConfigQueryResult = Apollo.QueryResult<MyConfigQuery, MyConfigQueryVariables>;
 export const CalendarDocument = gql`
     query Calendar($start: Date, $end: Date) {
   calendar(start: $start, end: $end) {
@@ -382,6 +548,47 @@ export function useCalendarLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<C
 export type CalendarQueryHookResult = ReturnType<typeof useCalendarQuery>;
 export type CalendarLazyQueryHookResult = ReturnType<typeof useCalendarLazyQuery>;
 export type CalendarQueryResult = Apollo.QueryResult<CalendarQuery, CalendarQueryVariables>;
+export const MyProjectsDocument = gql`
+    query MyProjects($page: Int!) {
+  myProjects(page: $page) {
+    data {
+      ...projectFragment
+    }
+    paginatorInfo {
+      ...paginatorInfoFragment
+    }
+  }
+}
+    ${ProjectFragmentFragmentDoc}
+${PaginatorInfoFragmentFragmentDoc}`;
+
+/**
+ * __useMyProjectsQuery__
+ *
+ * To run a query within a React component, call `useMyProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyProjectsQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *   },
+ * });
+ */
+export function useMyProjectsQuery(baseOptions: Apollo.QueryHookOptions<MyProjectsQuery, MyProjectsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MyProjectsQuery, MyProjectsQueryVariables>(MyProjectsDocument, options);
+      }
+export function useMyProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyProjectsQuery, MyProjectsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MyProjectsQuery, MyProjectsQueryVariables>(MyProjectsDocument, options);
+        }
+export type MyProjectsQueryHookResult = ReturnType<typeof useMyProjectsQuery>;
+export type MyProjectsLazyQueryHookResult = ReturnType<typeof useMyProjectsLazyQuery>;
+export type MyProjectsQueryResult = Apollo.QueryResult<MyProjectsQuery, MyProjectsQueryVariables>;
 export const UsersDocument = gql`
     query Users($page: Int!) {
   users(page: $page) {

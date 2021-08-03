@@ -2,9 +2,9 @@ import React from 'react'
 import type { NextPage } from 'next'
 import classNames from 'classnames'
 
-import useLogin from '../containers/useLogin'
-import Layout from '../../../components/Layout'
-import ScreenSpinner from '../../../components/spinner/Spinner'
+import useLogin from './useLogin'
+import Layout from '../../components/Layout'
+import ScreenSpinner from '../../components/spinner/Spinner'
 
 const Login: NextPage = () => {
   const {
@@ -86,9 +86,9 @@ const Login: NextPage = () => {
                 </button>
               </div>
               <p className="has-text-grey">
-                <a href="../">Sign Up</a> &nbsp;·&nbsp;
-                <a href="../">Forgot Password</a> &nbsp;·&nbsp;
-                <a href="../">Need Help?</a>
+                <a href="../../modules/users">Sign Up</a> &nbsp;·&nbsp;
+                <a href="../../modules/users">Forgot Password</a> &nbsp;·&nbsp;
+                <a href="../../modules/users">Need Help?</a>
               </p>
             </div>
           </div>

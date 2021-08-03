@@ -9,6 +9,7 @@ import { useApollo } from '../app/withApollo'
 
 import '../styles/global.scss'
 import 'react-toastify/dist/ReactToastify.css'
+import AppProvider from '../app/appProvider'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const apolloClient = useApollo(pageProps)
@@ -17,7 +18,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       <CsrfProvider>
         <ApolloProvider client={apolloClient}>
           <UserProvider>
-            <Component {...pageProps} />
+            <AppProvider>
+              <Component {...pageProps} />
+            </AppProvider>
           </UserProvider>
         </ApolloProvider>
       </CsrfProvider>

@@ -1,4 +1,4 @@
-import Login from '../modules/users/templates/Login'
+import Login from '../features/user/Login'
 import { redirectHoc } from '../app/userProvider'
 
 const auth = {

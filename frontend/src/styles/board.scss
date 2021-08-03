@@ -2,12 +2,12 @@
 .board-main {
     height: calc(100vh - 52px);
     display: flex;
+    background: #fff;
 }
 
 .board-canvas {
     position: relative;
     flex-grow: 1;
-    background: #4fbbaa;
 }
 
 .board {
@@ -53,11 +53,21 @@
     height: 100%;
 }
 
+.board-line.more {
+    height: auto;
+    min-height: 100px;
+
+    .board-line-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
 .board-line-title {
     flex: 0 0 auto;
     padding: 10px 8px;
     position: relative;
-    min-height: 20px;
 }
 
 .board-line-content {
@@ -79,22 +89,30 @@
     justify-content: space-between;
 }
 
-.board-line-content-subtitle {
+.board-line-content-title {
+    padding: 10px 0;
+    border-bottom: #fff 2px solid;
+}
 
+.board-line-content-subtitle {
+    padding: 8px 0;
 }
 
 .board-task {
     background-color: #fff;
     border-radius: 3px;
     box-shadow: 0 1px 0 rgb(9 30 66 / 25%);
-    cursor: pointer;
     display: block;
+    padding: 16px 8px;
     margin-bottom: 8px;
     max-width: 300px;
-    min-height: 20px;
     position: relative;
     text-decoration: none;
     z-index: 0;
+}
+
+.board-task-title {
+    margin-bottom: 4px;
 }
 
 /* scrollbar */

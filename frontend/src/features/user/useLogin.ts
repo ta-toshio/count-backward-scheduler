@@ -4,20 +4,16 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { toast } from 'react-toastify'
 
-import firebase from '../../../services/firebase'
-import {
-  loginAction,
-  postLoginAction,
-  selectRootUser,
-} from '../../../features/user/userSlice'
-import { useAppDispatch, useAppSelector } from '../../../app/hooks'
-import Yup from '../../../app/yup'
+import firebase from '../../services/firebase'
+import { loginAction, postLoginAction, selectRootUser } from './userSlice'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import Yup from '../../app/yup'
 import { useMutation } from '@apollo/client'
-import { LOGIN_AS_SOCIAL } from '../../../queries/user'
+import { LOGIN_AS_SOCIAL } from '../../queries/user'
 import {
   LoginAsSocialMutation,
   LoginAsSocialMutationVariables,
-} from '../../../generated/graphql'
+} from '../../generated/graphql'
 
 const provider = new firebase.auth.GoogleAuthProvider()
 

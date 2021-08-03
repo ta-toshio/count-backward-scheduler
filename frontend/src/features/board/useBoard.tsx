@@ -12,13 +12,13 @@ import {
   endOfMonth,
   addDays,
 } from 'date-fns'
-import { CALENDAR } from '../../../queries/calendar'
+import { CALENDAR } from '../../queries/calendar'
 import {
   CalendarQuery,
   CalendarQueryVariables,
   ScheduledTaskFragmentFragment,
-} from '../../../generated/graphql'
-import { getCalendarArray } from '../../../utils/appDate'
+} from '../../generated/graphql'
+import { getCalendarArray } from '../../utils/appDate'
 
 const startDate = startOfMonth(new Date())
 const endDate = endOfMonth(addMonths(startDate, 2))
@@ -99,6 +99,7 @@ const useBoard = () => {
       end: endDateStr,
     },
   })
+
   const {
     // loading: prevLoading,
     // error: prevError,
@@ -111,10 +112,12 @@ const useBoard = () => {
     },
   })
 
+  const [fetchMoreLoading, setFetchMoreLoading] = useState<boolean>(false)
+
   const [calendarData, setCalendarData] = useState<{}>({})
   const [prevCalendarData, setPrevCalendarData] = useState<{}>({})
   const [nextDate, setNextDate] = useState<Date>(endDate)
-  const [prevDate, setPrevDate] = useState<Date>(prevStartDate)
+  // const [prevDate, setPrevDate] = useState<Date>(prevStartDate)
 
   useEffect(() => {
     setCalendarData(formatScheduleData(data))
@@ -126,6 +129,7 @@ const useBoard = () => {
 
   const fetchMoreHandler = async (e) => {
     e.preventDefault()
+    setFetchMoreLoading(true)
     const start = addDays(nextDate, 1)
     const end = endOfMonth(addMonths(start, 2))
     try {
@@ -152,6 +156,7 @@ const useBoard = () => {
     } catch (e) {
       console.warn(e)
     }
+    setFetchMoreLoading(false)
     setNextDate(end)
   }
 
@@ -161,6 +166,7 @@ const useBoard = () => {
     loading,
     data,
     fetchMoreHandler,
+    fetchMoreLoading,
     calendarData,
     prevCalendarData,
   }
