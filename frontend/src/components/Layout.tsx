@@ -30,7 +30,7 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
         <div className="container">
           <div className="navbar-brand">
             <Link href="/">
-              <a className="navbar-item">Schedule</a>
+              <a className="navbar-item">Count Backward Schedule</a>
             </Link>
           </div>
 
@@ -124,27 +124,6 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
         </div>
       </nav>
       <main>{children}</main>
-      <footer>
-        <section className="hero is-medium has-text-centered">
-          <div className="hero-body">
-            <div className="container">
-              <div className="columns is-centered">
-                <div data-aos="zoom-in-up" className="column is-8">
-                  <h1 className="title titled is-1 mb-6">
-                    Primary bold title <span id="typewriter"></span>
-                  </h1>
-                  <h2 className="subtitle subtitled">
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                    Laborum cupiditate dolorum vitae dolores nesciunt totam
-                    magni quas. Lorem ipsum, dolor sit amet consectetur
-                    adipisicing elit.
-                  </h2>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </footer>
     </>
   )
 }
