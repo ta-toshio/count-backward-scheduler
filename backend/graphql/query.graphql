@@ -8,6 +8,19 @@ type Query {
 extend type Query @guard {
     me: User @auth
 
+    myConfig: Config
+        @find(model: "Config", scopes: ["my"])
+        @inject(context: "user.id", name: "user_id")
+
+    myProjects: [Project!]!
+        @paginate(
+            defaultCount: 50
+            type: PAGINATOR
+            model: "Project"
+            scopes: ["my", "sort"]
+        )
+        @inject(context: "user.id", name: "user_id")
+
     calendar(
         start: Date
         end: Date

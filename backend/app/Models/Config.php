@@ -23,4 +23,5 @@ class Config extends AppModel
         return $this->belongsTo(User::class);
     }
 
+
 }

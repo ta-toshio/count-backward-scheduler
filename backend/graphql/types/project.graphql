@@ -1,0 +1,14 @@
+
+type Project {
+    id: ID!
+    user_id: Int!
+    slug: String!
+    title: String!
+    start_date: Date
+    end_date: Date
+    ratio: Float!
+    coef: Float!
+    color: String!
+    created_at: DateTime
+    updated_at: DateTime
+}

@@ -1,0 +1,13 @@
+
+type Config {
+    id: ID!
+    user_id: Int!
+    start_date: Date!
+    sprint: Int!
+    hour_of_day: Float!
+    point_of_day: Float!
+    project_of_day: Int!
+    holidays: String!
+    created_at: DateTime
+    updated_at: DateTime
+}
