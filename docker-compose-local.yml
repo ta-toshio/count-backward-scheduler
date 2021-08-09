@@ -2,7 +2,6 @@ version: "3.9"
 volumes:
   php-fpm-socket:
   psysh-store:
-  data01:
 
 services:
   api-server:
@@ -83,32 +82,3 @@ services:
       - MYSQL_USER=myuser
       - MYSQL_PASSWORD=secret
       - MYSQL_ROOT_PASSWORD=secret
-
-  es01:
-    build:
-      context: .
-      dockerfile: ./infra/docker/elasticsearch/Dockerfile
-    container_name: es01
-    environment:
-      - node.name=es01
-      - cluster.name=es-docker-cluster
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - data01:/usr/share/elasticsearch/data
-    ports:
-      - 8143:9200
-
-  kib01:
-    image: docker.elastic.co/kibana/kibana:7.14.0
-    container_name: kib01
-    ports:
-      - 8144:5601
-    environment:
-      ELASTICSEARCH_URL: http://es01:9200
-      ELASTICSEARCH_HOSTS: http://es01:9200
